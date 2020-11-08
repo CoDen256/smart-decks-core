@@ -11,7 +11,7 @@ public class CardEntry implements Card {
     private final int level;
     private final Instant lastReview;
 
-    public CardEntry(int id, String firstSide, String secondSide, int level, Instant lastReview) {
+    CardEntry(int id, String firstSide, String secondSide, int level, Instant lastReview) {
         this.id = id;
         this.firstSide = Objects.requireNonNull(firstSide);
         this.secondSide = Objects.requireNonNull(secondSide);
@@ -19,7 +19,7 @@ public class CardEntry implements Card {
         this.lastReview = Objects.requireNonNull(lastReview);
     }
 
-    public CardEntry(CardEntry entry) {
+    CardEntry(CardEntry entry) {
         this.id = entry.getId();
         this.firstSide = entry.getFirstSide();
         this.secondSide = entry.getSecondSide();
@@ -52,7 +52,7 @@ public class CardEntry implements Card {
         return lastReview;
     }
 
-    public static class Builder{
+    public static class Builder {
 
         private int id = -1;
         private String firstSide;
@@ -63,28 +63,41 @@ public class CardEntry implements Card {
         public Builder() {
         }
 
-        public void setId(int id) {
+        public Builder(Card cardEntry) {
+            setId(cardEntry.getId());
+            setFirstSide(cardEntry.getFirstSide());
+            setSecondSide(cardEntry.getSecondSide());
+            setLastReview(cardEntry.getLastReview());
+            setLevel(cardEntry.getLevel());
+        }
+
+        public Builder setId(int id) {
             this.id = id;
+            return this;
         }
 
-        public void setFirstSide(String firstSide) {
+        public Builder setFirstSide(String firstSide) {
             this.firstSide = firstSide;
+            return this;
         }
 
-        public void setSecondSide(String secondSide) {
+        public Builder setSecondSide(String secondSide) {
             this.secondSide = secondSide;
+            return this;
         }
 
 
-        public void setLevel(int level) {
-             this.level = level;
+        public Builder setLevel(int level) {
+            this.level = level;
+            return this;
         }
 
-        public void setLastReview(Instant lastReview) {
+        public Builder setLastReview(Instant lastReview) {
             this.lastReview = lastReview;
+            return this;
         }
 
-        public CardEntry create(){
+        public CardEntry create() {
             return new CardEntry(id, firstSide, secondSide, level, lastReview);
         }
     }

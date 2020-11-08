@@ -15,10 +15,7 @@ public interface Database {
 
     Card getCardEntry(int id);
 
-    void updateEntry(Card entry);
-
-    void deleteEntry(Card entry);
     void deleteEntry(int id);
 
-    void addEntry(Card entry);
+    void addOrUpdateEntry(Card entry);
 }

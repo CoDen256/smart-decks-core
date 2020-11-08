@@ -9,12 +9,16 @@ public interface CardModel {
 
     void deleteCard(Card card);
 
-    void showFirstSide(Card card);
-    void showSecondSide(Card card);
+    String showFirstSide(Card card);
+    String showSecondSide(Card card);
 
     void setDontKnow(Card card);
     void setKnow(Card card);
 
     List<Card> getCardsToLearn();
     List<Card> getLearnedCards();
+
+    void registerObserver(CardObserver cardObserver);
+    void removeObserver(CardObserver cardObserver);
+
 }
