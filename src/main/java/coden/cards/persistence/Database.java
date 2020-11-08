@@ -6,16 +6,13 @@ import java.util.stream.Stream;
 
 public interface Database {
     Stream<Card> getAllEntries();
-    Stream<Card> getUnknownEntries();
-    Stream<Card> getKnownEntries();
-    Stream<Card> getOlderThan(Instant base);
-    Stream<Card> getYoungerThan(Instant base);
+
+    Stream<Card> getOlderReviewThan(Instant base);
+    Stream<Card> getYoungerReviewThan(Instant base);
     Stream<Card> getGreaterOrEqualLevel(int level);
     Stream<Card> getLessOrEqualLevel(int level);
 
-    Card getCardEntry(int id);
-
-    void deleteEntry(int id);
+    void deleteEntry(String firstSide);
 
     void addOrUpdateEntry(Card entry);
 }

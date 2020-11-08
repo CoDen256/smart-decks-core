@@ -5,31 +5,23 @@ import java.util.Objects;
 
 public class CardEntry implements Card {
 
-    private final int id;
     private final String firstSide;
     private final String secondSide;
     private final int level;
     private final Instant lastReview;
 
-    CardEntry(int id, String firstSide, String secondSide, int level, Instant lastReview) {
-        this.id = id;
-        this.firstSide = Objects.requireNonNull(firstSide);
-        this.secondSide = Objects.requireNonNull(secondSide);
+    CardEntry(String firstSide, String secondSide, int level, Instant lastReview) {
+        this.firstSide = firstSide;
+        this.secondSide = secondSide;
         this.level = level;
-        this.lastReview = Objects.requireNonNull(lastReview);
+        this.lastReview = lastReview;
     }
 
     CardEntry(CardEntry entry) {
-        this.id = entry.getId();
         this.firstSide = entry.getFirstSide();
         this.secondSide = entry.getSecondSide();
-        this.level = entry.level;
-        this.lastReview = entry.lastReview;
-    }
-
-    @Override
-    public int getId() {
-        return id;
+        this.level = entry.getLevel();
+        this.lastReview = entry.getLastReview();
     }
 
     @Override
@@ -54,7 +46,6 @@ public class CardEntry implements Card {
 
     public static class Builder {
 
-        private int id = -1;
         private String firstSide;
         private String secondSide;
         private int level = -1;
@@ -64,17 +55,12 @@ public class CardEntry implements Card {
         }
 
         public Builder(Card cardEntry) {
-            setId(cardEntry.getId());
             setFirstSide(cardEntry.getFirstSide());
             setSecondSide(cardEntry.getSecondSide());
             setLastReview(cardEntry.getLastReview());
             setLevel(cardEntry.getLevel());
         }
 
-        public Builder setId(int id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder setFirstSide(String firstSide) {
             this.firstSide = firstSide;
@@ -98,7 +84,18 @@ public class CardEntry implements Card {
         }
 
         public CardEntry create() {
-            return new CardEntry(id, firstSide, secondSide, level, lastReview);
+            validate();
+            return new CardEntry(
+                    Objects.requireNonNull(firstSide),
+                    Objects.requireNonNull(secondSide),
+                    level,
+                    Objects.requireNonNull(lastReview));
+        }
+
+        private void validate() {
+            if (this.level == -1) {
+                throw new IllegalStateException("Level has to be specified");
+            }
         }
     }
 }

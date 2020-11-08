@@ -3,22 +3,25 @@ package coden.cards.model;
 import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
 import coden.cards.persistence.Database;
+import coden.cards.reminder.Reminder;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CardModelImpl implements CardModel {
 
     private final List<CardObserver> observers = new LinkedList<>();
 
-    public static final int MIN_LEVEL = 0;
-    public static final int MAX_LEVEL = 10;
     private final Database database;
+    private final Reminder reminder;
+    private final Predicate<Card> unknownCardFilter;
 
-    public CardModelImpl(Database database) {
+    public CardModelImpl(Reminder reminder, Predicate<Card> unknownCardFilter, Database database) {
         this.database = database;
+        this.reminder = reminder;
+        this.unknownCardFilter = unknownCardFilter;
     }
 
     @Override
@@ -30,7 +33,6 @@ public class CardModelImpl implements CardModel {
     @Override
     public Card createCard(String firstSide, String secondSide) {
         return new CardEntry.Builder()
-                .setId(Objects.hash(firstSide))
                 .setFirstSide(firstSide)
                 .setSecondSide(secondSide)
                 .setLevel(0)
@@ -40,7 +42,7 @@ public class CardModelImpl implements CardModel {
 
     @Override
     public void deleteCard(Card card) {
-        database.deleteEntry(card.getId());
+        database.deleteEntry(card.getFirstSide());
     }
 
     @Override
@@ -56,7 +58,7 @@ public class CardModelImpl implements CardModel {
     @Override
     public void setDontKnow(Card card) {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
-                .setLevel(Math.max(MIN_LEVEL, card.getLevel() - 1))
+                .setLevel(Math.max(reminder.getMinLevel(), card.getLevel() - 1))
                 .create();
 
         database.addOrUpdateEntry(newCardEntry);
@@ -65,7 +67,7 @@ public class CardModelImpl implements CardModel {
     @Override
     public void setKnow(Card card) {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
-                .setLevel(Math.min(MAX_LEVEL, card.getLevel() + 1))
+                .setLevel(Math.min(reminder.getMaxLevel(), card.getLevel() + 1))
                 .create();
 
         database.addOrUpdateEntry(newCardEntry);
@@ -73,14 +75,15 @@ public class CardModelImpl implements CardModel {
 
     @Override
     public List<Card> getCardsToLearn() {
-        return database.getUnknownEntries()
-
+        return database.getLessOrEqualLevel(reminder.getMaxLevel())
+                .filter(unknownCardFilter)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Card> getLearnedCards() {
-        return database.getKnownEntries().collect(Collectors.toList());
+        return database.getGreaterOrEqualLevel(reminder.getMaxLevel()+1)
+                .collect(Collectors.toList());
     }
 
     @Override
