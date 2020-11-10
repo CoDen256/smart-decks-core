@@ -2,12 +2,12 @@ package coden.cards.model;
 
 import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
+import coden.cards.reminder.BaseReminder;
+import coden.cards.user.User;
 import coden.cards.persistence.Database;
-import coden.cards.reminder.Reminder;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CardModelImpl implements CardModel {
@@ -15,19 +15,17 @@ public class CardModelImpl implements CardModel {
     private final List<CardObserver> observers = new LinkedList<>();
 
     private final Database database;
-    private final Reminder reminder;
-    private final Predicate<Card> readyCardFilter;
+    private final BaseReminder reminder;
+    private User user;
 
-    public CardModelImpl(Reminder reminder, Predicate<Card> readyCardFilter, Database database) {
+    public CardModelImpl(BaseReminder reminder, Database database) {
         this.database = database;
         this.reminder = reminder;
-        this.readyCardFilter = readyCardFilter;
     }
 
     @Override
-    public Card addCard(Card card) throws Exception {
+    public void addCard(Card card) throws Exception {
         database.addOrUpdateEntry(card);
-        return card;
     }
 
     @Override
@@ -76,7 +74,7 @@ public class CardModelImpl implements CardModel {
     @Override
     public List<Card> getReadyCards() throws Exception {
         return database.getLessOrEqualLevel(reminder.getMaxLevel())
-                .filter(readyCardFilter)
+                .filter(reminder::shouldRemind)
                 .collect(Collectors.toList());
     }
 
@@ -89,5 +87,11 @@ public class CardModelImpl implements CardModel {
     @Override
     public List<Card> getAllCards() throws Exception {
         return database.getAllEntries().collect(Collectors.toList());
+    }
+
+    @Override
+    public void setUser(User user) throws Exception {
+        this.user = user;
+        database.setUser(user);
     }
 }

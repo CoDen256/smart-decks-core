@@ -1,10 +1,11 @@
 package coden.cards.model;
 
 import coden.cards.data.Card;
+import coden.cards.user.User;
 import java.util.List;
 
 public interface CardModel {
-    Card addCard(Card card) throws Exception;
+    void addCard(Card card) throws Exception;
     Card createCard(String firstSide, String secondSide) throws Exception;
 
     void deleteCard(Card card) throws Exception;
@@ -18,5 +19,7 @@ public interface CardModel {
     List<Card> getReadyCards() throws Exception;
     List<Card> getDoneCards() throws Exception;
     List<Card> getAllCards() throws Exception;
+
+    void setUser(User user) throws Exception;
 
 }

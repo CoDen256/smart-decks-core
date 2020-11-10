@@ -1,7 +1,9 @@
 package coden.cards.persistence.firebase;
 
 import coden.cards.data.Card;
+import coden.cards.user.User;
 import coden.cards.persistence.Database;
+import coden.cards.user.UserNotProvidedException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
@@ -16,20 +18,17 @@ import java.util.stream.Stream;
 
 public class Firebase implements Database {
 
-    private final String username;
     private final FirebaseConfig config;
     private final Firestore firestore;
 
-    private final CollectionReference cards;
+    private User user;
+    private CollectionReference cards;
 
-    public Firebase(String username, InputStream serviceAccount, InputStream config) throws IOException {
+    public Firebase(InputStream serviceAccount, InputStream config) throws IOException {
         Objects.requireNonNull(serviceAccount);
         Objects.requireNonNull(config);
-        Objects.requireNonNull(username);
-        this.username = username;
         this.config = new FirebaseConfig(config);
         this.firestore = createFirestore(serviceAccount, this.config.url);
-        this.cards = createCollection();
     }
 
     private Firestore createFirestore(InputStream serviceAccount, String url) throws IOException {
@@ -44,13 +43,18 @@ public class Firebase implements Database {
 
     private CollectionReference createCollection() {
         return firestore.collection(this.config.userCollection)
-                .document(this.username)
+                .document(this.user.getName())
                 .collection(this.config.mainCollection);
     }
+    @Override
+    public void setUser(User user){
+        this.user = Objects.requireNonNull(user);
+        this.cards = createCollection();
+    }
 
     @Override
-    public Stream<Card> getAllEntries() throws ExecutionException, InterruptedException {
-        return cards.get()
+    public Stream<Card> getAllEntries() throws ExecutionException, InterruptedException, UserNotProvidedException {
+        return getCards().get()
                 .get()
                 .getDocuments()
                 .stream()
@@ -59,8 +63,8 @@ public class Firebase implements Database {
 
 
     @Override
-    public Stream<Card> getGreaterOrEqualLevel(int level) throws ExecutionException, InterruptedException {
-        return cards.whereGreaterThanOrEqualTo("level", level)
+    public Stream<Card> getGreaterOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException {
+        return getCards().whereGreaterThanOrEqualTo("level", level)
                 .get()
                 .get()
                 .getDocuments()
@@ -69,8 +73,8 @@ public class Firebase implements Database {
     }
 
     @Override
-    public Stream<Card> getLessOrEqualLevel(int level) throws ExecutionException, InterruptedException {
-        return cards.whereLessThanOrEqualTo("level", level)
+    public Stream<Card> getLessOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException {
+        return getCards().whereLessThanOrEqualTo("level", level)
                 .get()
                 .get()
                 .getDocuments()
@@ -79,16 +83,22 @@ public class Firebase implements Database {
     }
 
     @Override
-    public void deleteEntry(Card entry) throws ExecutionException, InterruptedException {
-        cards.document(entry.getFirstSide())
+    public void deleteEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException {
+        getCards().document(entry.getFirstSide())
                 .delete()
                 .get();
     }
 
     @Override
-    public void addOrUpdateEntry(Card entry) throws ExecutionException, InterruptedException {
-        cards.document(entry.getFirstSide())
+    public void addOrUpdateEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException {
+        getCards().document(entry.getFirstSide())
                 .set(entry)
                 .get();
+    }
+    private CollectionReference getCards() throws UserNotProvidedException {
+        if (user == null){
+            throw new UserNotProvidedException();
+        }
+        return cards;
     }
 }

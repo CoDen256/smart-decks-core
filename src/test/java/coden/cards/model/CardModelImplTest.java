@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
+import coden.cards.user.User;
+import coden.cards.user.UserEntry;
 import coden.cards.persistence.firebase.Firebase;
 import coden.cards.reminder.Reminder;
 import java.io.IOException;
@@ -16,15 +18,19 @@ import org.junit.jupiter.api.Test;
 class CardModelImplTest {
 
 
+    final Reminder reminder = new Reminder(read("/reminder_test.json"));
+    final User user = new UserEntry("coden");
+
+    CardModelImplTest() throws IOException { }
+
     @Test
     void testAddAndGet() throws Exception {
-        final Reminder reminder = new Reminder(read("/reminder_test.json"));
-        final ReadyCardFilter cardFilter = new ReadyCardFilter(reminder);
-        final Firebase database = new Firebase(UUID.randomUUID().toString(),
+        final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, cardFilter, database);
+        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
+        cardModel.setUser(getRandomUser());
 
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         cardModel.addCard(card);
@@ -37,16 +43,18 @@ class CardModelImplTest {
         assertEquals(card.getLastReview(), actual.getLastReview());
     }
 
+    private UserEntry getRandomUser() {
+        return new UserEntry(UUID.randomUUID().toString());
+    }
+
     @Test
     void testDeleteEntry() throws Exception {
-        final Reminder reminder = new Reminder(read("/reminder_test.json"));
-        final ReadyCardFilter cardFilter = new ReadyCardFilter(reminder);
-        final Firebase database = new Firebase(UUID.randomUUID().toString(),
+        final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, cardFilter, database);
-
+        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
+        cardModel.setUser(getRandomUser());
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         cardModel.addCard(card);
         cardModel.deleteCard(card);
@@ -56,13 +64,13 @@ class CardModelImplTest {
 
     @Test
     void testComplexQueries() throws Exception {
-        final Reminder reminder = new Reminder(read("/reminder_test.json"));
-        final ReadyCardFilter cardFilter = new ReadyCardFilter(reminder);
-        final Firebase database = new Firebase("coden",
+        final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, cardFilter, database);
+        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
+        cardModel.setUser(user);
+
         final Card card = new CardEntry.Builder()
                 .setFirstSide("einsehen")
                 .setSecondSide("понять, изучить, убедиться")
@@ -80,24 +88,15 @@ class CardModelImplTest {
     @Test
     void testFlow() throws Exception {
         final Reminder reminder = new Reminder(read("/reminder_test.json"));
-        final ReadyCardFilter cardFilter = new ReadyCardFilter(reminder);
-        final Firebase database = new Firebase("coden",
+        final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, cardFilter, database);
-        final Card card = new CardEntry.Builder()
-                .setFirstSide("einsehen")
-                .setSecondSide("понять, изучить, убедиться")
-                .setLevel(reminder.getMaxLevel())
-                .setLastReview(Instant.now())
-                .create();
+        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
 
-        cardModel.addCard(card);
-        cardModel.setKnow(card);
+        int i = 0;
 
-        final List<Card> learnedCards = cardModel.getDoneCards();
-        assertEquals(1, learnedCards.size());
+
     }
 
     private InputStream read(String path){

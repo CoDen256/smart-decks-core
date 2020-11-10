@@ -1,9 +1,11 @@
 package coden.cards.reminder;
 
+import coden.cards.data.Card;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.util.Comparator;
@@ -11,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class Reminder {
+public class Reminder implements BaseReminder {
 
     private final List<ReminderLevel> levels = new LinkedList<>();
 
@@ -24,7 +26,6 @@ public class Reminder {
                 addLevel(entry, level);
             }
         }
-
     }
 
     private void addLevel(ReminderLevelEntry entry, int level) throws IOException {
@@ -39,7 +40,8 @@ public class Reminder {
         return chronoUnit.getDuration().multipliedBy(amount);
     }
 
-    public TemporalAmount getNextReminderDelay(int level){
+    @VisibleForTesting
+    TemporalAmount getNextReminderDelay(int level){
         return levels.stream()
                 .filter(entry -> entry.getLevel() == level)
                 .findAny()
@@ -47,6 +49,7 @@ public class Reminder {
                 .orElseThrow();
     }
 
+    @Override
     public int getMinLevel(){
         return levels.stream()
                 .min(Comparator.comparing(ReminderLevel::getLevel))
@@ -54,10 +57,21 @@ public class Reminder {
                 .orElse(0);
     }
 
+    @Override
     public int getMaxLevel(){
         return levels.stream()
                 .max(Comparator.comparing(ReminderLevel::getLevel))
                 .map(ReminderLevel::getLevel)
                 .orElse(0);
     }
+
+    @Override
+    public boolean shouldRemind(Card card) {
+        final Instant lastReview = card.getLastReview();
+        final int level = card.getLevel();
+        final TemporalAmount nextReminderDelay = this.getNextReminderDelay(level);
+        final Instant nextRemind = lastReview.plus(nextReminderDelay);
+        return !Instant.now().isBefore(nextRemind);
+    }
+
 }
