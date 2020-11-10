@@ -6,8 +6,8 @@
   },
   {
     "levels": [1],
-    "amount": 30,
-    "unit": "MINUTES"
+    "amount": 1,
+    "unit": "HOURS"
   },
 
   {
@@ -16,12 +16,12 @@
     "unit": "DAYS"
   },
   {
-    "levels": [10],
+    "levels": [9],
     "amount": 1,
     "unit": "WEEKS"
   },
   {
-    "levels": [11],
+    "levels": [10],
     "amount": 2,
     "unit": "WEEKS"
   }

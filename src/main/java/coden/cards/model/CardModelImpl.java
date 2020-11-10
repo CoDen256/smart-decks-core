@@ -3,11 +3,14 @@ package coden.cards.model;
 import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
 import coden.cards.reminder.BaseReminder;
+import coden.cards.reminder.Reminder;
 import coden.cards.user.User;
 import coden.cards.persistence.Database;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CardModelImpl implements CardModel {
@@ -57,6 +60,7 @@ public class CardModelImpl implements CardModel {
     public void setDontKnow(Card card) throws Exception {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.max(reminder.getMinLevel(), card.getLevel() - 1))
+                .setLastReview(Instant.now())
                 .create();
 
         database.addOrUpdateEntry(newCardEntry);
@@ -66,6 +70,7 @@ public class CardModelImpl implements CardModel {
     public void setKnow(Card card) throws Exception {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.min(reminder.getMaxLevel(), card.getLevel() + 1))
+                .setLastReview(Instant.now())
                 .create();
 
         database.addOrUpdateEntry(newCardEntry);
@@ -73,8 +78,17 @@ public class CardModelImpl implements CardModel {
 
     @Override
     public List<Card> getReadyCards() throws Exception {
-        return database.getLessOrEqualLevel(reminder.getMaxLevel())
+        return database.getLessOrEqualLevel(reminder.getMaxLevel()-1)
                 .filter(reminder::shouldRemind)
+                .sorted(Comparator.comparing(reminder::getOvertime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Card> getPendingCards() throws Exception {
+        return database.getLessOrEqualLevel(reminder.getMaxLevel()-1)
+                .filter(Predicate.not(reminder::shouldRemind))
+                .sorted(Comparator.comparing(reminder::getOvertime).reversed())
                 .collect(Collectors.toList());
     }
 

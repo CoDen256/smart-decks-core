@@ -94,7 +94,14 @@ class CardModelImplTest {
 
         final CardModelImpl cardModel = new CardModelImpl(reminder, database);
 
-        int i = 0;
+//        cardModel.getReadyCards() throws exception
+        cardModel.setUser(new UserEntry("balbes"));
+
+        cardModel.getReadyCards(); // length = 0
+        final Card card = cardModel.createCard("versiegeln", "запечатывать, опечатывать");
+        cardModel.addCard(card);
+
+        cardModel.getReadyCards();
 
 
     }

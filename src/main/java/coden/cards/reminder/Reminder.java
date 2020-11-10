@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
@@ -67,11 +68,22 @@ public class Reminder implements BaseReminder {
 
     @Override
     public boolean shouldRemind(Card card) {
+        final Instant nextReminder = getNextReminder(card);
+        return !Instant.now().isBefore(nextReminder);
+    }
+
+    @Override
+    public Duration getOvertime(Card card){
+        final Instant nextReminder = getNextReminder(card);
+        final Instant now = Instant.now();
+        return Duration.between(nextReminder, now);
+    }
+
+    private Instant getNextReminder(Card card) {
         final Instant lastReview = card.getLastReview();
         final int level = card.getLevel();
         final TemporalAmount nextReminderDelay = this.getNextReminderDelay(level);
-        final Instant nextRemind = lastReview.plus(nextReminderDelay);
-        return !Instant.now().isBefore(nextRemind);
+        return lastReview.plus(nextReminderDelay);
     }
 
 }
