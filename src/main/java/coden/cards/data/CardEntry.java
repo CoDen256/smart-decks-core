@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class CardEntry implements Card {
 
-    private final String firstSide;
-    private final String secondSide;
-    private final int level;
-    private final Instant lastReview;
+    private String firstSide;
+    private String secondSide;
+    private int level;
+    private Instant lastReview;
 
     CardEntry(String firstSide, String secondSide, int level, Instant lastReview) {
         this.firstSide = firstSide;
@@ -17,12 +17,15 @@ public class CardEntry implements Card {
         this.lastReview = lastReview;
     }
 
-    CardEntry(CardEntry entry) {
+    public CardEntry(CardEntry entry) {
         this.firstSide = entry.getFirstSide();
         this.secondSide = entry.getSecondSide();
         this.level = entry.getLevel();
         this.lastReview = entry.getLastReview();
     }
+
+    /** No arg constructor for deserialization */
+    CardEntry() { }
 
     @Override
     public String getFirstSide() {

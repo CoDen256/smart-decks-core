@@ -9,6 +9,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class Reminder {
 
@@ -16,7 +17,7 @@ public class Reminder {
 
     public Reminder(InputStream is) throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final ReminderLevelEntry[] entries = objectMapper.readValue(is, ReminderLevelEntry[].class);
+        final ReminderLevelEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), ReminderLevelEntry[].class);
 
         for (ReminderLevelEntry entry: entries){
             for (int level: entry.getLevels()){

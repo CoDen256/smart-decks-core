@@ -6,11 +6,11 @@ import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.function.Predicate;
 
-public class CardFilter implements Predicate<Card> {
+public class ReadyCardFilter implements Predicate<Card> {
 
     private final Reminder reminder;
 
-    public CardFilter(Reminder reminder) {
+    public ReadyCardFilter(Reminder reminder) {
         this.reminder = reminder;
     }
 

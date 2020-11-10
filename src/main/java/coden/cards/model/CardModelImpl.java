@@ -16,16 +16,16 @@ public class CardModelImpl implements CardModel {
 
     private final Database database;
     private final Reminder reminder;
-    private final Predicate<Card> unknownCardFilter;
+    private final Predicate<Card> readyCardFilter;
 
-    public CardModelImpl(Reminder reminder, Predicate<Card> unknownCardFilter, Database database) {
+    public CardModelImpl(Reminder reminder, Predicate<Card> readyCardFilter, Database database) {
         this.database = database;
         this.reminder = reminder;
-        this.unknownCardFilter = unknownCardFilter;
+        this.readyCardFilter = readyCardFilter;
     }
 
     @Override
-    public Card addCard(Card card) {
+    public Card addCard(Card card) throws Exception {
         database.addOrUpdateEntry(card);
         return card;
     }
@@ -41,8 +41,8 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public void deleteCard(Card card) {
-        database.deleteEntry(card.getFirstSide());
+    public void deleteCard(Card card) throws Exception {
+        database.deleteEntry(card);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public void setDontKnow(Card card) {
+    public void setDontKnow(Card card) throws Exception {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.max(reminder.getMinLevel(), card.getLevel() - 1))
                 .create();
@@ -65,7 +65,7 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public void setKnow(Card card) {
+    public void setKnow(Card card) throws Exception {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.min(reminder.getMaxLevel(), card.getLevel() + 1))
                 .create();
@@ -74,25 +74,20 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public List<Card> getCardsToLearn() {
+    public List<Card> getReadyCards() throws Exception {
         return database.getLessOrEqualLevel(reminder.getMaxLevel())
-                .filter(unknownCardFilter)
+                .filter(readyCardFilter)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Card> getLearnedCards() {
-        return database.getGreaterOrEqualLevel(reminder.getMaxLevel()+1)
+    public List<Card> getDoneCards() throws Exception {
+        return database.getGreaterOrEqualLevel(reminder.getMaxLevel())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void registerObserver(CardObserver cardObserver) {
-        observers.add(cardObserver);
-    }
-
-    @Override
-    public void removeObserver(CardObserver cardObserver) {
-        observers.remove(cardObserver);
+    public List<Card> getAllCards() throws Exception {
+        return database.getAllEntries().collect(Collectors.toList());
     }
 }

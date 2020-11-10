@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,7 @@ class ReminderTest {
 
     @Test
     void testReminderReadProperly() throws IOException {
-        final Reminder reminder = new Reminder(ReminderTest.class.getResourceAsStream("/config_test.json"));
+        final Reminder reminder = new Reminder(ReminderTest.class.getResourceAsStream("/reminder_test.json"));
 
         assertEquals(10, reminder.getMaxLevel());
         assertEquals(0, reminder.getMinLevel());

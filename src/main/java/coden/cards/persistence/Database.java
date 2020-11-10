@@ -1,18 +1,15 @@
 package coden.cards.persistence;
 
 import coden.cards.data.Card;
-import java.time.Instant;
 import java.util.stream.Stream;
 
 public interface Database {
-    Stream<Card> getAllEntries();
+    Stream<Card> getAllEntries() throws Exception;
 
-    Stream<Card> getOlderReviewThan(Instant base);
-    Stream<Card> getYoungerReviewThan(Instant base);
-    Stream<Card> getGreaterOrEqualLevel(int level);
-    Stream<Card> getLessOrEqualLevel(int level);
+    Stream<Card> getGreaterOrEqualLevel(int level) throws Exception;
+    Stream<Card> getLessOrEqualLevel(int level) throws Exception;
 
-    void deleteEntry(String firstSide);
+    void deleteEntry(Card entry) throws Exception;
 
-    void addOrUpdateEntry(Card entry);
+    void addOrUpdateEntry(Card entry) throws Exception;
 }

@@ -4,21 +4,19 @@ import coden.cards.data.Card;
 import java.util.List;
 
 public interface CardModel {
-    Card addCard(Card card);
-    Card createCard(String firstSide, String secondSide);
+    Card addCard(Card card) throws Exception;
+    Card createCard(String firstSide, String secondSide) throws Exception;
 
-    void deleteCard(Card card);
+    void deleteCard(Card card) throws Exception;
 
     String showFirstSide(Card card);
     String showSecondSide(Card card);
 
-    void setDontKnow(Card card);
-    void setKnow(Card card);
+    void setDontKnow(Card card) throws Exception;
+    void setKnow(Card card) throws Exception;
 
-    List<Card> getCardsToLearn();
-    List<Card> getLearnedCards();
-
-    void registerObserver(CardObserver cardObserver);
-    void removeObserver(CardObserver cardObserver);
+    List<Card> getReadyCards() throws Exception;
+    List<Card> getDoneCards() throws Exception;
+    List<Card> getAllCards() throws Exception;
 
 }

@@ -18,36 +18,13 @@ import java.util.Properties;
 
 public class Config {
 
-    public final String sender = getString("sender");
-
     private final Properties properties;
 
     public Config(final String path) { this(read(path)); }
     public Config(final Properties properties) {
         this.properties = requireNonNull(properties);
     }
-
-    public static Properties read(final String path) {
-        try {
-            return read(new FileInputStream(requireNonNull(path)));
-        } catch (final FileNotFoundException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static Properties read(final InputStream in) {
-        // the properties class uses backslash as escape character, so we need to replace it
-        try (Reader reader =
-                new InputStreamReader(new BufferedInputStream(requireNonNull(in)), StandardCharsets.UTF_8)) {
-            final Properties properties = new Properties();
-            properties.load(reader);
-            return properties;
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
-        } catch (final Throwable t) {
-            throw new UncheckedIOException(new IOException(t.getMessage(), t));
-        }
-    }
+    public Config(final InputStream is) { this(read(is)); }
 
     public final List<String> getCommaSeparatedStringList(final String property) {
         try {
@@ -66,5 +43,27 @@ public class Config {
 
     public final String getString(final String property) {
         return getProperty(property);
+    }
+
+    public static Properties read(final String path) {
+        try {
+            return read(new FileInputStream(requireNonNull(path)));
+        } catch (final FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static Properties read(final InputStream in) {
+        // the properties class uses backslash as escape character, so we need to replace it
+        try (Reader reader =
+                     new InputStreamReader(new BufferedInputStream(requireNonNull(in)), StandardCharsets.UTF_8)) {
+            final Properties properties = new Properties();
+            properties.load(reader);
+            return properties;
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (final Throwable t) {
+            throw new UncheckedIOException(new IOException(t.getMessage(), t));
+        }
     }
 }
