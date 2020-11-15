@@ -13,8 +13,10 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+//@Disabled
 class CardModelImplTest {
 
 
@@ -29,8 +31,7 @@ class CardModelImplTest {
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
-        cardModel.setUser(getRandomUser());
+        final CardModelImpl cardModel = new CardModelImpl(getRandomUser(), reminder, database);
 
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         cardModel.addCard(card);
@@ -53,8 +54,7 @@ class CardModelImplTest {
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
-        cardModel.setUser(getRandomUser());
+        final CardModelImpl cardModel = new CardModelImpl(user, reminder, database);
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         cardModel.addCard(card);
         cardModel.deleteCard(card);
@@ -68,8 +68,7 @@ class CardModelImplTest {
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
-        cardModel.setUser(user);
+        final CardModelImpl cardModel = new CardModelImpl(user, reminder, database);
 
         final Card card = new CardEntry.Builder()
                 .setFirstSide("einsehen")
@@ -92,17 +91,11 @@ class CardModelImplTest {
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
 
-        final CardModelImpl cardModel = new CardModelImpl(reminder, database);
+        final CardModel cardModel = new CachedCardModel(new UserEntry("balbes"), reminder, database);
 
-//        cardModel.getReadyCards() throws exception
-        cardModel.setUser(new UserEntry("balbes"));
+        while (true){
 
-        cardModel.getReadyCards(); // length = 0
-        final Card card = cardModel.createCard("versiegeln", "запечатывать, опечатывать");
-        cardModel.addCard(card);
-
-        cardModel.getReadyCards();
-
+        }
 
     }
 

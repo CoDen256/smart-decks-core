@@ -5,7 +5,7 @@ import coden.cards.user.User;
 import java.util.stream.Stream;
 
 public interface Database {
-    void setUser(User user) throws Exception;
+    void setUser(User user);
 
     Stream<Card> getAllEntries() throws Exception;
     Stream<Card> getGreaterOrEqualLevel(int level) throws Exception;

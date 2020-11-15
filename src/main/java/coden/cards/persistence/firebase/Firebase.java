@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 public class Firebase implements Database {
@@ -53,9 +55,9 @@ public class Firebase implements Database {
     }
 
     @Override
-    public Stream<Card> getAllEntries() throws ExecutionException, InterruptedException, UserNotProvidedException {
+    public Stream<Card> getAllEntries() throws ExecutionException, InterruptedException, UserNotProvidedException, TimeoutException {
         return getCards().get()
-                .get()
+                .get(30, TimeUnit.SECONDS)
                 .getDocuments()
                 .stream()
                 .map(c -> c.toObject(FirebaseCardEntry.class));
@@ -63,37 +65,37 @@ public class Firebase implements Database {
 
 
     @Override
-    public Stream<Card> getGreaterOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException {
+    public Stream<Card> getGreaterOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException, TimeoutException {
         return getCards().whereGreaterThanOrEqualTo("level", level)
                 .get()
-                .get()
+                .get(30, TimeUnit.SECONDS)
                 .getDocuments()
                 .stream()
                 .map(c -> c.toObject(FirebaseCardEntry.class));
     }
 
     @Override
-    public Stream<Card> getLessOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException {
+    public Stream<Card> getLessOrEqualLevel(int level) throws ExecutionException, InterruptedException, UserNotProvidedException, TimeoutException {
         return getCards().whereLessThanOrEqualTo("level", level)
                 .get()
-                .get()
+                .get(30, TimeUnit.SECONDS)
                 .getDocuments()
                 .stream()
                 .map(c -> c.toObject(FirebaseCardEntry.class));
     }
 
     @Override
-    public void deleteEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException {
+    public void deleteEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException, TimeoutException {
         getCards().document(entry.getFirstSide())
                 .delete()
-                .get();
+                .get(30, TimeUnit.SECONDS);
     }
 
     @Override
-    public void addOrUpdateEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException {
+    public void addOrUpdateEntry(Card entry) throws ExecutionException, InterruptedException, UserNotProvidedException, TimeoutException {
         getCards().document(entry.getFirstSide())
                 .set(entry)
-                .get();
+                .get(30, TimeUnit.SECONDS);
     }
     private CollectionReference getCards() throws UserNotProvidedException {
         if (user == null){

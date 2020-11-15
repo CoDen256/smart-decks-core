@@ -16,6 +16,8 @@ public interface CardModel {
     void setDontKnow(Card card) throws Exception;
     void setKnow(Card card) throws Exception;
 
+    Card getNextCard() throws Exception;
+
     List<Card> getReadyCards() throws Exception;
     List<Card> getPendingCards() throws Exception;
     List<Card> getDoneCards() throws Exception;
