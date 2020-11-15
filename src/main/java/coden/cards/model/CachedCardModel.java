@@ -1,19 +1,14 @@
 package coden.cards.model;
 
 import coden.cards.data.Card;
-import coden.cards.data.CardEntry;
 import coden.cards.persistence.Database;
 import coden.cards.reminder.BaseReminder;
 import coden.cards.user.User;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,46 +19,60 @@ public class CachedCardModel extends CardModelImpl{
     public static final int MIN_SIZE = 2;
 
     private final Deque<Card> cache = new LinkedList<>();
-    private final ScheduledExecutorService scheduler;
-    private final ExecutorService executorService;
+
+    private CompletableFuture<Deque<Card>> updatingCacheFuture;
 
     public CachedCardModel(User user, BaseReminder reminder, Database database) {
         super(user, reminder, database);
-        executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(this::tryFetchAndUpdateCache);
+        updateFuture();
+        runScheduler(1, 1);
+    }
 
-        scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::tryFetchAndUpdateCache, 1, 1, TimeUnit.MINUTES);
+    private void runScheduler(int delay, int period) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::updateFuture, delay, period, TimeUnit.MINUTES);
     }
 
     @Override
-    public synchronized Card getNextCard() throws Exception {
+    public CompletableFuture<Card> getNextCard() throws Exception {
         try {
-            return cache.pop();
+            return createCompletableFuture(cache.pop());
         }catch (NoSuchElementException e){
-            return null;
+            if (updatingCacheFuture == null) updateFuture();
+            return updatingCacheFuture
+                    .thenApply(Deque::peek);
         }finally {
-            if (isMinimumSize(cache)) executorService.submit(this::tryFetchAndUpdateCache);
+            if (isMinimumSize(cache)) updateFuture();
         }
+    }
+
+    private void updateFuture(){
+        if (updatingCacheFuture == null || updatingCacheFuture.isDone()){
+            updatingCacheFuture = createGetAndUpdateCacheFuture();
+        }
+    }
+
+    private CompletableFuture<Deque<Card>> createGetAndUpdateCacheFuture() {
+        try{
+            return getReadyCards().thenApply(this::updateCache);
+        } catch (Exception ignored){ return null;}
+    }
+
+    private CompletableFuture<Card> createCompletableFuture(Card card){
+        final CompletableFuture<Card> cardFuture = new CompletableFuture<>();
+        cardFuture.complete(card);
+        return cardFuture;
     }
 
     private boolean isMinimumSize(Collection<Card> cache){
         return cache.size() < MIN_SIZE;
     }
 
-    private void tryFetchAndUpdateCache(){
-        try {
-            fetchAndUpdateCache();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    private Deque<Card> updateCache(Collection<Card> cards){
+        cache.clear();
+        cache.addAll(cards);
+        return cache;
     }
 
-    private void fetchAndUpdateCache() throws Exception{
-        final List<Card> readyCards = getReadyCards();
-        synchronized (this){
-            cache.clear();
-            cache.addAll(readyCards);
-        }
-    }
+
 }

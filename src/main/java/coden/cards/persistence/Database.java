@@ -2,17 +2,17 @@ package coden.cards.persistence;
 
 import coden.cards.data.Card;
 import coden.cards.user.User;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public interface Database {
     void setUser(User user);
 
-    Stream<Card> getAllEntries() throws Exception;
-    Stream<Card> getGreaterOrEqualLevel(int level) throws Exception;
+    CompletableFuture<Stream<Card>> getAllEntries() throws Exception;
+    CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level) throws Exception;
+    CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level) throws Exception;
 
-    Stream<Card> getLessOrEqualLevel(int level) throws Exception;
+    CompletableFuture<Void> deleteEntry(Card entry) throws Exception;
 
-    void deleteEntry(Card entry) throws Exception;
-
-    void addOrUpdateEntry(Card entry) throws Exception;
+    CompletableFuture<Void> addOrUpdateEntry(Card entry) throws Exception;
 }

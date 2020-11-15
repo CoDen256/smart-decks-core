@@ -3,25 +3,26 @@ package coden.cards.model;
 import coden.cards.data.Card;
 import coden.cards.user.User;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface CardModel {
-    void addCard(Card card) throws Exception;
     Card createCard(String firstSide, String secondSide) throws Exception;
-
-    void deleteCard(Card card) throws Exception;
-
     String showFirstSide(Card card);
     String showSecondSide(Card card);
 
-    void setDontKnow(Card card) throws Exception;
-    void setKnow(Card card) throws Exception;
+    CompletableFuture<Void> setKnow(Card card) throws Exception;
+    CompletableFuture<Void> setDontKnow(Card card) throws Exception;
 
-    Card getNextCard() throws Exception;
+    CompletableFuture<Void> addCard(Card card) throws Exception;
 
-    List<Card> getReadyCards() throws Exception;
-    List<Card> getPendingCards() throws Exception;
-    List<Card> getDoneCards() throws Exception;
-    List<Card> getAllCards() throws Exception;
+    CompletableFuture<Void> deleteCard(Card card) throws Exception;
+
+    CompletableFuture<Card> getNextCard() throws Exception;
+
+    CompletableFuture<List<Card>> getReadyCards() throws Exception;
+    CompletableFuture<List<Card>> getPendingCards() throws Exception;
+    CompletableFuture<List<Card>> getDoneCards() throws Exception;
+    CompletableFuture<List<Card>> getAllCards() throws Exception;
 
     void setUser(User user) throws Exception;
 
