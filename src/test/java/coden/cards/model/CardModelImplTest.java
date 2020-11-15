@@ -19,7 +19,7 @@ import javax.xml.crypto.Data;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-//@Disabled
+@Disabled
 class CardModelImplTest {
 
 
@@ -32,7 +32,7 @@ class CardModelImplTest {
 
     CardModelImplTest() throws IOException { }
 
-    @Test
+//    @Test
     void testAddAndGet() throws Exception {
         final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
@@ -55,7 +55,7 @@ class CardModelImplTest {
         return new UserEntry(UUID.randomUUID().toString());
     }
 
-    @Test
+//    @Test
     void testDeleteEntry() throws Exception {
         final CardModelImpl cardModel = new CardModelImpl(user, reminder, firebase);
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
@@ -65,7 +65,7 @@ class CardModelImplTest {
 //        assertEquals(0, cards.size());
     }
 
-    @Test
+//    @Test
     void testComplexQueries() throws Exception {
         final Firebase database = new Firebase(
                 read("/serviceAccountTest.json"),
@@ -87,11 +87,11 @@ class CardModelImplTest {
 //        assertEquals(1, learnedCards.size());
     }
 
-    @Test
+//    @Test
     void testFlow() throws Exception {
         final Reminder reminder = new Reminder(read("/reminder_test.json"));
         final Database database = new FakeDatabase();
-        final CardModel cardModel = new CachedCardModel(new UserEntry("balbes"), reminder, firebase);
+        final CardModel cardModel = new CachedCardModel(new UserEntry("balbes"), reminder, firebase, 1);
         database.addOrUpdateEntry(cardModel.createCard("nahen", "приближаться"));
         database.addOrUpdateEntry(cardModel.createCard("Wege einschlagen", "выбирать пути"));
         database.addOrUpdateEntry(cardModel.createCard("spät dran", "быть поздным"));

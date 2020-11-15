@@ -15,7 +15,7 @@ class ReminderTest {
 
         assertEquals(10, reminder.getMaxLevel());
         assertEquals(0, reminder.getMinLevel());
-        assertEquals(Duration.of(5, ChronoUnit.MINUTES), reminder.getNextReminderDelay(0));
+        assertEquals(Duration.of(1, ChronoUnit.MINUTES), reminder.getNextReminderDelay(0));
         assertEquals(Duration.of(1, ChronoUnit.HOURS), reminder.getNextReminderDelay(1));
 
         assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(2));

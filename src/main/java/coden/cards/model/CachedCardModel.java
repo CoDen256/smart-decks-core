@@ -22,10 +22,10 @@ public class CachedCardModel extends CardModelImpl{
 
     private CompletableFuture<Deque<Card>> updatingCacheFuture;
 
-    public CachedCardModel(User user, BaseReminder reminder, Database database) {
+    public CachedCardModel(User user, BaseReminder reminder, Database database, int pollMinutes) {
         super(user, reminder, database);
         updateFuture();
-        runScheduler(1, 1);
+        runScheduler(pollMinutes, pollMinutes);
     }
 
     private void runScheduler(int delay, int period) {
@@ -34,7 +34,7 @@ public class CachedCardModel extends CardModelImpl{
     }
 
     @Override
-    public CompletableFuture<Card> getNextCard() throws Exception {
+    public CompletableFuture<Card> getNextCard() {
         try {
             return createCompletableFuture(cache.pop());
         }catch (NoSuchElementException e){
