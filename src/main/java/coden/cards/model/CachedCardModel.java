@@ -40,9 +40,17 @@ public class CachedCardModel extends CardModelImpl{
         }catch (NoSuchElementException e){
             if (updatingCacheFuture == null) updateFuture();
             return updatingCacheFuture
-                    .thenApply(Deque::peek);
+                    .thenApply(this::popToNull);
         }finally {
             if (isMinimumSize(cache)) updateFuture();
+        }
+    }
+
+    private Card popToNull(Deque<Card> deque){
+        try {
+            return deque.pop();
+        }catch (NoSuchElementException e){
+            return null;
         }
     }
 

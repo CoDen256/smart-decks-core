@@ -25,6 +25,10 @@ class CardModelImplTest {
 
     final Reminder reminder = new Reminder(read("/reminder_test.json"));
     final User user = new UserEntry("coden");
+    final Firebase firebase = new Firebase(
+            read("/serviceAccountTest.json"),
+            read("/firebase_test.cfg"));
+
 
     CardModelImplTest() throws IOException { }
 
@@ -53,11 +57,7 @@ class CardModelImplTest {
 
     @Test
     void testDeleteEntry() throws Exception {
-        final Firebase database = new Firebase(
-                read("/serviceAccountTest.json"),
-                read("/firebase_test.cfg"));
-
-        final CardModelImpl cardModel = new CardModelImpl(user, reminder, database);
+        final CardModelImpl cardModel = new CardModelImpl(user, reminder, firebase);
         final Card card = cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
 //        cardModel.addCard(card);
 //        cardModel.deleteCard(card);
@@ -91,13 +91,16 @@ class CardModelImplTest {
     void testFlow() throws Exception {
         final Reminder reminder = new Reminder(read("/reminder_test.json"));
         final Database database = new FakeDatabase();
-        final CardModel cardModel = new CachedCardModel(new UserEntry("balbes"), reminder, database);
+        final CardModel cardModel = new CachedCardModel(new UserEntry("balbes"), reminder, firebase);
         database.addOrUpdateEntry(cardModel.createCard("nahen", "приближаться"));
         database.addOrUpdateEntry(cardModel.createCard("Wege einschlagen", "выбирать пути"));
         database.addOrUpdateEntry(cardModel.createCard("spät dran", "быть поздным"));
-        database.addOrUpdateEntry(cardModel.createCard("einsehen", "изучит,убедиться, понять"));
+        database.addOrUpdateEntry(cardModel.createCard("einsehen", "изучить убедиться, понять"));
         while (true){
-
+            cardModel.getNextCard().get();
+            cardModel.getNextCard().get();
+            cardModel.getNextCard().get();
+            cardModel.getNextCard().get();
         }
 
     }
