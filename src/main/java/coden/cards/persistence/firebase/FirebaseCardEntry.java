@@ -32,4 +32,8 @@ public class FirebaseCardEntry implements Card {
     public Instant getLastReview() {
         return Instant.ofEpochSecond(lastReview.get("epochSecond"), lastReview.get("nano"));
     }
+    @Override
+    public String toString() {
+        return "Card:"+firstSide;
+    }
 }

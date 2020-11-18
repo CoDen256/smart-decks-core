@@ -54,8 +54,17 @@ public class CachedCardModel extends CardModelImpl{
         // should go for own cache
         // 2) first run, newCache is done, but cache is empty, should go for newCache
         // 3) cache is not empty, but newCache is Done()
+        // THE QUESTION: WHEN TO UPDATE CACHE WITH NEW CACHE
+        // * WHEN IS EMPTY
+        // * EVERY SCHEDULED CALL
+        // * AFTER MINIMUM
+        // * ON START
+        // THE 2nd QUESTION: WHEN TO LOAD A NEW CACHE:
+        // * WHEN IT IS MINIMUM
+        // * EVERY SCHEDULED CALL
+        // * ON START
         if (cache.isEmpty()){
-            cacheToQuery = newCache.thenApply(this::updateCacheWithNew);
+            cacheToQuery = newCache;
         }
         else {
             cacheToQuery = createCompletableFuture(cache);
@@ -76,7 +85,10 @@ public class CachedCardModel extends CardModelImpl{
 
     private void updateNewCache(){
         if (newCache == null || newCache.isDone())
-            newCache = createNewCache();
+            // if not updated, new cache will be queried from last check for minimum,
+            // but the real cache will be returned, and this one will be returned only when
+            // newCache is empty
+            newCache = createNewCache().thenApply(this::updateCacheWithNew);
     }
 
     private Deque<Card> updateCacheWithNew(Deque<Card> newCache){
@@ -103,6 +115,8 @@ public class CachedCardModel extends CardModelImpl{
         return cardFuture;
     }
 
+    // maybe do not update on every on minimum check, instead update newCache only once, and then
+    // it will be returned on empty
     private boolean isMinimumSize(Deque<Card> cache){
         return cache.size() < MIN_SIZE;
     }

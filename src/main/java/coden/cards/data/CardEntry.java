@@ -101,4 +101,9 @@ public class CardEntry implements Card {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Card:"+firstSide;
+    }
 }

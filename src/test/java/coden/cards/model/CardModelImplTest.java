@@ -7,13 +7,12 @@ import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
 import coden.cards.persistence.Database;
 import coden.cards.persistence.FakeDatabase;
-import coden.cards.user.User;
-import coden.cards.user.UserEntry;
 import coden.cards.persistence.firebase.Firebase;
 import coden.cards.reminder.Reminder;
+import coden.cards.user.User;
+import coden.cards.user.UserEntry;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -22,22 +21,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.xml.crypto.Data;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class CardModelImplTest {
 
 
-    final Reminder reminder = new Reminder(read("/reminder_test.json"));
-    final User user = new UserEntry("coden");
-    final Database firebase = new Firebase(
-            read("/serviceAccountTest.json"),
-            read("/firebase_test.cfg"));
-    final Database fakeDatabase = new FakeDatabase();
+    private static Reminder reminder = null;
+    private static Database firebase = null;
 
 
-    CardModelImplTest() throws IOException { }
+    @BeforeAll
+    static void beforeAll() throws Exception{
+        reminder = new Reminder(read("/reminder_test.json"));
+        firebase = new Firebase(
+                read("/serviceAccountTest.json"),
+                read("/firebase_test.cfg"));
+    }
 
     @Test
     void testAddAndGet() throws Exception {
@@ -97,14 +97,17 @@ class CardModelImplTest {
         final CardModel cardModel = new CardModelImpl(randomUser, reminder, firebase);
 
         final Card newCard1 = new CardEntry.Builder(createRandomCard(cardModel))
+                .setFirstSide("15 Minutes")
                 .setLastReview(Instant.now().minus(15, ChronoUnit.MINUTES))
                 .create();
 
         final Card newCard2 = new CardEntry.Builder(createRandomCard(cardModel))
+                .setFirstSide("10 Minutes")
                 .setLastReview(Instant.now().minus(10, ChronoUnit.MINUTES))
                 .create();
 
         final Card newCard3 = new CardEntry.Builder(createRandomCard(cardModel))
+                .setFirstSide("5 Minutes")
                 .setLastReview(Instant.now().minus(5, ChronoUnit.MINUTES))
                 .create();
 
@@ -128,28 +131,7 @@ class CardModelImplTest {
                 .get(5, TimeUnit.SECONDS).getFirstSide());
         assertEquals(newCard3.getFirstSide(), cachedCardModel.getNextCard()
                 .get(5, TimeUnit.SECONDS).getFirstSide());
-
-
     }
-
-    @Test
-    void testFlowByCachedCardModel() throws Exception {
-        final CardModel cardModel = new CachedCardModel(getRandomUser(), reminder, firebase, 1);
-
-
-        cardModel.addCard(cardModel.createCard("nahen", "приближаться"));
-        cardModel.addCard(cardModel.createCard("Wege einschlagen", "выбирать пути"));
-        cardModel.addCard(cardModel.createCard("spät dran", "быть поздным"));
-        cardModel.addCard(cardModel.createCard("einsehen", "изучить убедиться, понять"));
-        while (true){
-            cardModel.getNextCard().get();
-            cardModel.getNextCard().get();
-            cardModel.getNextCard().get();
-            cardModel.getNextCard().get();
-        }
-
-    }
-
 
     private UserEntry getRandomUser() {
         return new UserEntry(UUID.randomUUID().toString());
@@ -159,7 +141,7 @@ class CardModelImplTest {
         return cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
-    private InputStream read(String path){
+    private static InputStream read(String path){
         return CardModelImpl.class.getResourceAsStream(path);
     }
 }
