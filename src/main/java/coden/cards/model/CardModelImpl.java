@@ -98,7 +98,7 @@ public class CardModelImpl implements CardModel {
     }
 
     private List<Card> findPendingCards(Stream<Card> cards) {
-        return cards.filter(Predicate.not(reminder::shouldRemind))
+        return cards.filter((c) -> !reminder.shouldRemind(c))
                 .sorted(Comparator.comparing(reminder::getOvertime).reversed())
                 .collect(Collectors.toList());
     }

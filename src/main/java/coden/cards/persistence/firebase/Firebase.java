@@ -118,7 +118,7 @@ public class Firebase implements Database {
     }
 
     private <T> ApiFutureCallback<T> createCallback(CompletableFuture<T> completableFuture) {
-        return new ApiFutureCallback<>() {
+        return new ApiFutureCallback<T>() {
             @Override
             public void onFailure(Throwable t) {
             }

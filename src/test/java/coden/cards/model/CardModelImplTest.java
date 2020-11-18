@@ -19,7 +19,7 @@ import javax.xml.crypto.Data;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+//@Disabled
 class CardModelImplTest {
 
 
@@ -65,13 +65,9 @@ class CardModelImplTest {
 //        assertEquals(0, cards.size());
     }
 
-//    @Test
+    @Test
     void testComplexQueries() throws Exception {
-        final Firebase database = new Firebase(
-                read("/serviceAccountTest.json"),
-                read("/firebase_test.cfg"));
-
-        final CardModelImpl cardModel = new CardModelImpl(user, reminder, database);
+        final CardModelImpl cardModel = new CardModelImpl(user, reminder, firebase);
 
         final Card card = new CardEntry.Builder()
                 .setFirstSide("einsehen")

@@ -29,7 +29,7 @@ public class Config {
     public final List<String> getCommaSeparatedStringList(final String property) {
         try {
             final String csv = getString(property);
-            return List.of(csv.split(","));
+            return Arrays.asList(csv.split(","));
         } catch (final IllegalArgumentException e) {
             return Collections.emptyList();
         }

@@ -47,7 +47,7 @@ public class Reminder implements BaseReminder {
                 .filter(entry -> entry.getLevel() == level)
                 .findAny()
                 .map(ReminderLevel::getTemporalAmount)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Unable to get next reminder delay"));
     }
 
     @Override
