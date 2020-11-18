@@ -92,7 +92,9 @@ class CardModelImplTest {
 
     @Test
     void testGetNext() throws InterruptedException, ExecutionException, TimeoutException {
-        final CardModel cardModel = new CachedCardModel(getRandomUser(), reminder, firebase, 1);
+        // Setup
+        final UserEntry randomUser = getRandomUser();
+        final CardModel cardModel = new CardModelImpl(randomUser, reminder, firebase);
 
         final Card newCard1 = new CardEntry.Builder(createRandomCard(cardModel))
                 .setLastReview(Instant.now().minus(15, ChronoUnit.MINUTES))
@@ -113,16 +115,18 @@ class CardModelImplTest {
         assertTrue(reminder.shouldRemind(newCard2));
         assertTrue(reminder.shouldRemind(newCard3));
 
-        final CompletableFuture<List<Card>> readyCards = cardModel.getReadyCards();
+        // Execute
+        final CachedCardModel cachedCardModel = new CachedCardModel(randomUser, reminder, firebase, 1);
+        final CompletableFuture<List<Card>> readyCards = cachedCardModel.getReadyCards();
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());
         final Card card = cards.get(0);
         assertEquals(newCard1.getFirstSide(), card.getFirstSide());
-        assertEquals(newCard1.getFirstSide(), cardModel.getNextCard()
+        assertEquals(newCard1.getFirstSide(), cachedCardModel.getNextCard()
                 .get(5, TimeUnit.SECONDS).getFirstSide());
-        assertEquals(newCard2.getFirstSide(), cardModel.getNextCard()
+        assertEquals(newCard2.getFirstSide(), cachedCardModel.getNextCard()
                 .get(5, TimeUnit.SECONDS).getFirstSide());
-        assertEquals(newCard3.getFirstSide(), cardModel.getNextCard()
+        assertEquals(newCard3.getFirstSide(), cachedCardModel.getNextCard()
                 .get(5, TimeUnit.SECONDS).getFirstSide());
 
 
