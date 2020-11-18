@@ -1,4 +1,4 @@
 package coden.cards.user;
 
-public class UserNotProvidedException extends Exception {
+public class UserNotProvidedException extends RuntimeException {
 }

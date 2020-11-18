@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface CardModel {
-    Card createCard(String firstSide, String secondSide) throws Exception;
+    Card createCard(String firstSide, String secondSide);
     String showFirstSide(Card card);
     String showSecondSide(Card card);
 
-    CompletableFuture<Void> setKnow(Card card) throws Exception;
-    CompletableFuture<Void> setDontKnow(Card card) throws Exception;
+    CompletableFuture<Void> setKnow(Card card);
+    CompletableFuture<Void> setDontKnow(Card card);
 
-    CompletableFuture<Void> addCard(Card card) throws Exception;
+    CompletableFuture<Void> addCard(Card card);
 
-    CompletableFuture<Void> deleteCard(Card card) throws Exception;
+    CompletableFuture<Void> deleteCard(Card card);
 
-    CompletableFuture<Card> getNextCard() throws Exception;
+    CompletableFuture<Card> getNextCard();
 
-    CompletableFuture<List<Card>> getReadyCards() throws Exception;
-    CompletableFuture<List<Card>> getPendingCards() throws Exception;
-    CompletableFuture<List<Card>> getDoneCards() throws Exception;
-    CompletableFuture<List<Card>> getAllCards() throws Exception;
+    CompletableFuture<List<Card>> getReadyCards();
+    CompletableFuture<List<Card>> getPendingCards();
+    CompletableFuture<List<Card>> getDoneCards();
+    CompletableFuture<List<Card>> getAllCards();
 
-    void setUser(User user) throws Exception;
+    void setUser(User user);
 
 }

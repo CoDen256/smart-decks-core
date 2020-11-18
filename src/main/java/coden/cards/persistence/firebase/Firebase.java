@@ -96,7 +96,7 @@ public class Firebase implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> addOrUpdateEntry(Card entry) throws UserNotProvidedException {
+    public CompletableFuture<Void> addOrUpdateEntry(Card entry){
         final ApiFuture<WriteResult> addOrUpdateFuture = getCards()
                 .document(entry.getFirstSide())
                 .set(entry);
@@ -104,7 +104,7 @@ public class Firebase implements Database {
                 .thenApply(writeResult -> null);
     }
 
-    private CollectionReference getCards() throws UserNotProvidedException {
+    private CollectionReference getCards(){
         if (user == null) {
             throw new UserNotProvidedException();
         }

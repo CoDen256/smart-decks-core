@@ -21,28 +21,28 @@ public class FakeDatabase implements Database {
     }
 
     @Override
-    public CompletableFuture<Stream<Card>> getAllEntries() throws Exception {
+    public CompletableFuture<Stream<Card>> getAllEntries()  {
         final CompletableFuture<Stream<Card>> future = new CompletableFuture<>();
         future.complete(cards.stream());
         return future;
     }
 
     @Override
-    public CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level) throws Exception {
+    public CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level) {
         final CompletableFuture<Stream<Card>> future = new CompletableFuture<>();
         future.complete(cards.stream().filter(card -> card.getLevel() >= level));
         return future;
     }
 
     @Override
-    public CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level) throws Exception {
+    public CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level) {
         final CompletableFuture<Stream<Card>> future = new CompletableFuture<>();
         future.complete(cards.stream().filter(card -> card.getLevel() <= level));
         return future;
     }
 
     @Override
-    public CompletableFuture<Void> deleteEntry(Card entry) throws Exception {
+    public CompletableFuture<Void> deleteEntry(Card entry) {
         final CompletableFuture<Void> future = new CompletableFuture<>();
         cards.removeIf(e -> e.getFirstSide().equals(entry.getFirstSide()));
         future.complete(null);
@@ -50,7 +50,7 @@ public class FakeDatabase implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> addOrUpdateEntry(Card entry) throws Exception {
+    public CompletableFuture<Void> addOrUpdateEntry(Card entry){
         final CompletableFuture<Void> future = new CompletableFuture<>();
         deleteEntry(entry);
         cards.add(entry);

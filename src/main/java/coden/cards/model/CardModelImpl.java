@@ -46,7 +46,7 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public CompletableFuture<Void> setKnow(Card card) throws Exception {
+    public CompletableFuture<Void> setKnow(Card card){
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.min(reminder.getMaxLevel(), card.getLevel() + 1))
                 .setLastReview(Instant.now())
@@ -56,7 +56,7 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public CompletableFuture<Void> setDontKnow(Card card) throws Exception {
+    public CompletableFuture<Void> setDontKnow(Card card) {
         final CardEntry newCardEntry = new CardEntry.Builder(card)
                 .setLevel(Math.max(reminder.getMinLevel(), card.getLevel() - 1))
                 .setLastReview(Instant.now())
@@ -66,22 +66,22 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public CompletableFuture<Void> addCard(Card card) throws Exception {
+    public CompletableFuture<Void> addCard(Card card){
         return database.addOrUpdateEntry(card);
     }
 
     @Override
-    public CompletableFuture<Void> deleteCard(Card card) throws Exception {
+    public CompletableFuture<Void> deleteCard(Card card){
         return database.deleteEntry(card);
     }
 
     @Override
-    public CompletableFuture<Card> getNextCard() throws Exception {
+    public CompletableFuture<Card> getNextCard(){
         return getPendingCards().thenApply(cards -> cards.get(0));
     }
 
     @Override
-    public CompletableFuture<List<Card>> getReadyCards() throws Exception {
+    public CompletableFuture<List<Card>> getReadyCards() {
         return database.getLessOrEqualLevel(reminder.getMaxLevel() - 1)
                 .thenApply(this::findReadyCards);
     }
@@ -92,7 +92,7 @@ public class CardModelImpl implements CardModel {
                 .collect(Collectors.toList());
     }
     @Override
-    public CompletableFuture<List<Card>> getPendingCards() throws Exception {
+    public CompletableFuture<List<Card>> getPendingCards() {
         return database.getLessOrEqualLevel(reminder.getMaxLevel() - 1)
                 .thenApply(this::findPendingCards);
     }
@@ -104,13 +104,13 @@ public class CardModelImpl implements CardModel {
     }
 
     @Override
-    public CompletableFuture<List<Card>> getDoneCards() throws Exception {
+    public CompletableFuture<List<Card>> getDoneCards() {
         return database.getGreaterOrEqualLevel(reminder.getMaxLevel())
                 .thenApply(this::collect);
     }
 
     @Override
-    public CompletableFuture<List<Card>> getAllCards() throws Exception {
+    public CompletableFuture<List<Card>> getAllCards(){
         return database.getAllEntries().thenApply(this::collect);
     }
 

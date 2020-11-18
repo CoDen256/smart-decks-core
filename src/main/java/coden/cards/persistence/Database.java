@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 public interface Database {
     void setUser(User user);
 
-    CompletableFuture<Stream<Card>> getAllEntries() throws Exception;
-    CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level) throws Exception;
-    CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level) throws Exception;
+    CompletableFuture<Stream<Card>> getAllEntries();
+    CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level);
+    CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level);
 
-    CompletableFuture<Void> deleteEntry(Card entry) throws Exception;
+    CompletableFuture<Void> deleteEntry(Card entry);
 
-    CompletableFuture<Void> addOrUpdateEntry(Card entry) throws Exception;
+    CompletableFuture<Void> addOrUpdateEntry(Card entry);
 }
