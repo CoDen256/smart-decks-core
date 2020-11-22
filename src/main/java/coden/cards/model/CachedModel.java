@@ -8,12 +8,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class CachedCardModel extends CardModelImpl{
+public class CachedModel extends SimpleModel {
 
     public static final int MIN_SIZE = 2;
 
@@ -21,7 +20,7 @@ public class CachedCardModel extends CardModelImpl{
 
     private CompletableFuture<Deque<Card>> newCache;
 
-    public CachedCardModel(User user, BaseReminder reminder, Database database, int pollMinutes) {
+    public CachedModel(User user, BaseReminder reminder, Database database, int pollMinutes) {
         super(user, reminder, database);
         updateNewCache();
         runScheduler(pollMinutes, pollMinutes);

@@ -1,6 +1,7 @@
-package coden.cards.persistence;
+package coden.cards.persistence.fake;
 
 import coden.cards.data.Card;
+import coden.cards.persistence.Database;
 import coden.cards.user.User;
 import java.util.HashSet;
 import java.util.Set;

@@ -9,17 +9,16 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CardModelImpl implements CardModel {
+public class SimpleModel implements Model {
 
     private final Database database;
     private final BaseReminder reminder;
     private User user;
 
-    public CardModelImpl(User user, BaseReminder reminder, Database database) {
+    public SimpleModel(User user, BaseReminder reminder, Database database) {
         this.database = database;
         this.reminder = reminder;
         setUser(user);

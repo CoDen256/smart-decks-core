@@ -5,7 +5,7 @@ import coden.cards.user.User;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface CardModel {
+public interface Model {
     Card createCard(String firstSide, String secondSide);
     String showFirstSide(Card card);
     String showSecondSide(Card card);

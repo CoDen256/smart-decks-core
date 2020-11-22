@@ -6,12 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import coden.cards.data.Card;
 import coden.cards.data.CardEntry;
 import coden.cards.persistence.Database;
-import coden.cards.persistence.FakeDatabase;
 import coden.cards.persistence.firebase.Firebase;
 import coden.cards.reminder.Reminder;
-import coden.cards.user.User;
 import coden.cards.user.UserEntry;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -24,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class CardModelImplTest {
+class SimpleModelTest {
 
 
     private static Reminder reminder = null;
@@ -41,7 +38,7 @@ class CardModelImplTest {
 
     @Test
     void testAddAndGet() throws Exception {
-        final CardModelImpl cardModel = new CardModelImpl(getRandomUser(), reminder, firebase);
+        final SimpleModel cardModel = new SimpleModel(getRandomUser(), reminder, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         final CompletableFuture<List<Card>> cardsFuture = cardModel.getAllCards();
@@ -56,7 +53,7 @@ class CardModelImplTest {
 
     @Test
     void testDeleteEntry() throws Exception {
-        final CardModelImpl cardModel = new CardModelImpl(getRandomUser(), reminder, firebase);
+        final SimpleModel cardModel = new SimpleModel(getRandomUser(), reminder, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         cardModel.deleteCard(card).get(5, TimeUnit.SECONDS);
@@ -68,7 +65,7 @@ class CardModelImplTest {
 
     @Test
     void testComplexQueries() throws Exception {
-        final CardModelImpl cardModel = new CardModelImpl(getRandomUser(), reminder, firebase);
+        final SimpleModel cardModel = new SimpleModel(getRandomUser(), reminder, firebase);
 
         final Card card = new CardEntry.Builder()
                 .setFirstSide("einsehen")
@@ -94,32 +91,32 @@ class CardModelImplTest {
     void testGetNext() throws InterruptedException, ExecutionException, TimeoutException {
         // Setup
         final UserEntry randomUser = getRandomUser();
-        final CardModel cardModel = new CardModelImpl(randomUser, reminder, firebase);
+        final Model model = new SimpleModel(randomUser, reminder, firebase);
 
-        final Card newCard1 = new CardEntry.Builder(createRandomCard(cardModel))
+        final Card newCard1 = new CardEntry.Builder(createRandomCard(model))
                 .setFirstSide("15 Minutes")
                 .setLastReview(Instant.now().minus(15, ChronoUnit.MINUTES))
                 .create();
 
-        final Card newCard2 = new CardEntry.Builder(createRandomCard(cardModel))
+        final Card newCard2 = new CardEntry.Builder(createRandomCard(model))
                 .setFirstSide("10 Minutes")
                 .setLastReview(Instant.now().minus(10, ChronoUnit.MINUTES))
                 .create();
 
-        final Card newCard3 = new CardEntry.Builder(createRandomCard(cardModel))
+        final Card newCard3 = new CardEntry.Builder(createRandomCard(model))
                 .setFirstSide("5 Minutes")
                 .setLastReview(Instant.now().minus(5, ChronoUnit.MINUTES))
                 .create();
 
-        cardModel.addCard(newCard1).get(5, TimeUnit.SECONDS);
-        cardModel.addCard(newCard2).get(5, TimeUnit.SECONDS);
-        cardModel.addCard(newCard3).get(5, TimeUnit.SECONDS);
+        model.addCard(newCard1).get(5, TimeUnit.SECONDS);
+        model.addCard(newCard2).get(5, TimeUnit.SECONDS);
+        model.addCard(newCard3).get(5, TimeUnit.SECONDS);
         assertTrue(reminder.shouldRemind(newCard1));
         assertTrue(reminder.shouldRemind(newCard2));
         assertTrue(reminder.shouldRemind(newCard3));
 
         // Execute
-        final CachedCardModel cachedCardModel = new CachedCardModel(randomUser, reminder, firebase, 1);
+        final CachedModel cachedCardModel = new CachedModel(randomUser, reminder, firebase, 1);
         final CompletableFuture<List<Card>> readyCards = cachedCardModel.getReadyCards();
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());
@@ -137,11 +134,11 @@ class CardModelImplTest {
         return new UserEntry(UUID.randomUUID().toString());
     }
 
-    private Card createRandomCard(CardModel cardModel) {
-        return cardModel.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    private Card createRandomCard(Model model) {
+        return model.createCard(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
     private static InputStream read(String path){
-        return CardModelImpl.class.getResourceAsStream(path);
+        return SimpleModel.class.getResourceAsStream(path);
     }
 }
