@@ -10,6 +10,8 @@ public interface BaseReminder{
 
     int getMaxLevel();
 
+    TemporalAmount getNextReminderDelay(int level);
+
     boolean shouldRemind(Card card);
 
     Duration getOvertime(Card card);

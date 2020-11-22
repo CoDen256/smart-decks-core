@@ -41,8 +41,8 @@ public class Reminder implements BaseReminder {
         return chronoUnit.getDuration().multipliedBy(amount);
     }
 
-    @VisibleForTesting
-    TemporalAmount getNextReminderDelay(int level){
+    @Override
+    public TemporalAmount getNextReminderDelay(int level){
         return levels.stream()
                 .filter(entry -> entry.getLevel() == level)
                 .findAny()
