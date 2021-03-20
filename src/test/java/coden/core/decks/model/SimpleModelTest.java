@@ -45,8 +45,8 @@ class SimpleModelTest {
         final List<Card> cards = cardsFuture.get(5, TimeUnit.SECONDS);
         assertEquals(1, cards.size());
         final Card actual = cards.get(0);
-        assertEquals(card.getFirstSide(), actual.getFirstSide());
-        assertEquals(card.getSecondSide(), actual.getSecondSide());
+        assertEquals(card.getFrontSide(), actual.getFrontSide());
+        assertEquals(card.getBackSide(), actual.getBackSide());
         assertEquals(card.getLevel(), actual.getLevel());
         assertEquals(card.getLastReview(), actual.getLastReview());
     }
@@ -68,8 +68,8 @@ class SimpleModelTest {
         final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), reminder, firebase);
 
         final Card card = new SimpleCard.Builder()
-                .setFirstSide("einsehen")
-                .setSecondSide("понять, изучить, убедиться")
+                .setFrontSide("einsehen")
+                .setBackSide("понять, изучить, убедиться")
                 .setLevel(reminder.getMaxLevel())
                 .setLastReview(Instant.now())
                 .create();
@@ -82,8 +82,8 @@ class SimpleModelTest {
         assertEquals(1, learnedCards.size());
         final Card doneCard = learnedCards.get(0);
         assertEquals(reminder.getMaxLevel(), doneCard.getLevel());
-        assertEquals("einsehen", doneCard.getFirstSide());
-        assertEquals("понять, изучить, убедиться", doneCard.getSecondSide());
+        assertEquals("einsehen", doneCard.getFrontSide());
+        assertEquals("понять, изучить, убедиться", doneCard.getBackSide());
         assertTrue(card.getLastReview().isBefore(doneCard.getLastReview()));
     }
 
@@ -94,26 +94,26 @@ class SimpleModelTest {
         final DecksModel decksModel = new SimpleDecks(randomUser, reminder, firebase);
 
         final Card newCard1 = new SimpleCard.Builder(createRandomCard(decksModel))
-                .setFirstSide("15 Minutes")
+                .setFrontSide("15 Minutes")
                 .setLastReview(Instant.now().minus(15, ChronoUnit.MINUTES))
                 .create();
 
         final Card newCard2 = new SimpleCard.Builder(createRandomCard(decksModel))
-                .setFirstSide("10 Minutes")
+                .setFrontSide("10 Minutes")
                 .setLastReview(Instant.now().minus(10, ChronoUnit.MINUTES))
                 .create();
 
         final Card newCard3 = new SimpleCard.Builder(createRandomCard(decksModel))
-                .setFirstSide("5 Minutes")
+                .setFrontSide("5 Minutes")
                 .setLastReview(Instant.now().minus(5, ChronoUnit.MINUTES))
                 .create();
 
         decksModel.addCard(newCard1).get(5, TimeUnit.SECONDS);
         decksModel.addCard(newCard2).get(5, TimeUnit.SECONDS);
         decksModel.addCard(newCard3).get(5, TimeUnit.SECONDS);
-        assertTrue(reminder.shouldRemind(newCard1));
-        assertTrue(reminder.shouldRemind(newCard2));
-        assertTrue(reminder.shouldRemind(newCard3));
+        assertTrue(reminder.isReady(newCard1));
+        assertTrue(reminder.isReady(newCard2));
+        assertTrue(reminder.isReady(newCard3));
 
         // Execute
         final CachedDecks cachedCardModel = new CachedDecks(randomUser, reminder, firebase, 1);
@@ -121,13 +121,13 @@ class SimpleModelTest {
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());
         final Card card = cards.get(0);
-        assertEquals(newCard1.getFirstSide(), card.getFirstSide());
-        Assertions.assertEquals(newCard1.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
-        Assertions.assertEquals(newCard2.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
-        Assertions.assertEquals(newCard3.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
+        assertEquals(newCard1.getFrontSide(), card.getFrontSide());
+        Assertions.assertEquals(newCard1.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
+        Assertions.assertEquals(newCard2.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
+        Assertions.assertEquals(newCard3.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
     }
 
     private UserEntry getRandomUser() {

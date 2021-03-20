@@ -3,26 +3,18 @@ package coden.core.decks.reminder;
 import java.util.List;
 
 public class ReminderLevelEntry {
-    private int amount;
-    private String unit;
+    private String durationString;
     private List<Integer> levels;
 
     ReminderLevelEntry(){}
 
-    public int getAmount() {
-        return amount;
+
+    public String getDurationString() {
+        return durationString;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setDurationString(String durationString) {
+        this.durationString = durationString;
     }
 
     public List<Integer> getLevels() {

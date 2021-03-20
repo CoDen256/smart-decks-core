@@ -1,23 +1,23 @@
 package coden.core.decks.reminder;
 
-import java.time.temporal.TemporalAmount;
+import java.time.Duration;
 import java.util.Objects;
 
 public class ReminderLevel {
     private int level;
-    private TemporalAmount temporalAmount;
+    private Duration delayToNextRevision;
 
-    public ReminderLevel(int level, TemporalAmount temporalAmount) {
+    public ReminderLevel(int level, Duration delayToNextRevision) {
         this.level = level;
-        this.temporalAmount = temporalAmount;
+        this.delayToNextRevision = delayToNextRevision;
     }
 
-    public TemporalAmount getTemporalAmount() {
-        return temporalAmount;
+    public Duration getDelayToNextRevision() {
+        return delayToNextRevision;
     }
 
-    public void setTemporalAmount(TemporalAmount temporalAmount) {
-        this.temporalAmount = temporalAmount;
+    public void setDelayToNextRevision(Duration delayToNextRevision) {
+        this.delayToNextRevision = delayToNextRevision;
     }
 
     public int getLevel() {

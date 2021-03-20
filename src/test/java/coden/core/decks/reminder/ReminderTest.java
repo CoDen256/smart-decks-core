@@ -15,18 +15,18 @@ class ReminderTest {
 
         assertEquals(10, reminder.getMaxLevel());
         assertEquals(0, reminder.getMinLevel());
-        assertEquals(Duration.of(1, ChronoUnit.MINUTES), reminder.getNextReminderDelay(0));
-        assertEquals(Duration.of(1, ChronoUnit.HOURS), reminder.getNextReminderDelay(1));
+        assertEquals(Duration.of(1, ChronoUnit.MINUTES), reminder.getTimeToNextRevision(0));
+        assertEquals(Duration.of(1, ChronoUnit.HOURS), reminder.getTimeToNextRevision(1));
 
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(2));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(3));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(4));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(5));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(6));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(7));
-        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getNextReminderDelay(8));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(2));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(3));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(4));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(5));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(6));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(7));
+        assertEquals(Duration.of(1, ChronoUnit.DAYS), reminder.getTimeToNextRevision(8));
 
-        assertEquals(ChronoUnit.WEEKS.getDuration(), reminder.getNextReminderDelay(9));
-        assertEquals(ChronoUnit.WEEKS.getDuration().multipliedBy(2), reminder.getNextReminderDelay(10));
+        assertEquals(ChronoUnit.WEEKS.getDuration(), reminder.getTimeToNextRevision(9));
+        assertEquals(ChronoUnit.WEEKS.getDuration().multipliedBy(2), reminder.getTimeToNextRevision(10));
     }
 }

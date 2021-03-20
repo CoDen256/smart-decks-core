@@ -1,40 +1,71 @@
 package coden.core.decks.data;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * Basic implementation of the {@link Card}. The {@code SimpleCard} is immutable,
+ * created only from {@link Builder} and thus thread safe
+ */
+@ThreadSafe
 public class SimpleCard implements Card {
 
-    private String firstSide;
-    private String secondSide;
+    /** The front side of the card */
+    private String frontSide;
+    /** The back side of the card */
+    private String backSide;
+    /** The current level of memorizing the card */
     private int level;
+    /** The last review of the card */
     private Instant lastReview;
 
-    SimpleCard(String firstSide, String secondSide, int level, Instant lastReview) {
-        this.firstSide = firstSide;
-        this.secondSide = secondSide;
+    /**
+     * Creates a new {@code Simple} card from the given front and back side, level of progress and
+     * last review
+     *
+     * @param frontSide
+     *         the front side
+     * @param backSide
+     *         the back side
+     * @param level
+     *         the level of progress of the card.
+     * @param lastReview
+     *         the last review of the card
+     */
+    SimpleCard(String frontSide, String backSide, int level, Instant lastReview) {
+        this.frontSide = frontSide;
+        this.backSide = backSide;
         this.level = level;
         this.lastReview = lastReview;
     }
 
-    public SimpleCard(SimpleCard entry) {
-        this.firstSide = entry.getFirstSide();
-        this.secondSide = entry.getSecondSide();
-        this.level = entry.getLevel();
-        this.lastReview = entry.getLastReview();
+    /**
+     * Represents a clone constructor. Creates a new {@code SimpleCard} from the given card.
+     *
+     * @param card
+     *         the original card
+     */
+    public SimpleCard(Card card) {
+        this.frontSide = card.getFrontSide();
+        this.backSide = card.getBackSide();
+        this.level = card.getLevel();
+        this.lastReview = card.getLastReview();
     }
 
     /** No arg constructor for deserialization */
-    SimpleCard() { }
-
-    @Override
-    public String getFirstSide() {
-        return firstSide;
+    SimpleCard() {
     }
 
     @Override
-    public String getSecondSide() {
-        return secondSide;
+    public String getFrontSide() {
+        return frontSide;
+    }
+
+    @Override
+    public String getBackSide() {
+        return backSide;
     }
 
     @Override
@@ -47,31 +78,41 @@ public class SimpleCard implements Card {
         return lastReview;
     }
 
+    /**
+     * Represents a Builder for the {@code SimpleCard} to create a new card
+     * from the given card or from the scratch.
+     */
     public static class Builder {
-
-        private String firstSide;
-        private String secondSide;
+        private String frontSide;
+        private String backSide;
         private int level = -1;
         private Instant lastReview;
 
+        /**
+         * Creates a new builder with empty card
+         */
         public Builder() {
         }
 
-        public Builder(Card cardEntry) {
-            setFirstSide(cardEntry.getFirstSide());
-            setSecondSide(cardEntry.getSecondSide());
-            setLastReview(cardEntry.getLastReview());
-            setLevel(cardEntry.getLevel());
+        /**
+         * Creates a new builder for card from the given card
+         * @param card the original card
+         */
+        public Builder(Card card) {
+            setFrontSide(card.getFrontSide());
+            setBackSide(card.getBackSide());
+            setLastReview(card.getLastReview());
+            setLevel(card.getLevel());
         }
 
 
-        public Builder setFirstSide(String firstSide) {
-            this.firstSide = firstSide;
+        public Builder setFrontSide(String frontSide) {
+            this.frontSide = frontSide;
             return this;
         }
 
-        public Builder setSecondSide(String secondSide) {
-            this.secondSide = secondSide;
+        public Builder setBackSide(String backSide) {
+            this.backSide = backSide;
             return this;
         }
 
@@ -86,11 +127,15 @@ public class SimpleCard implements Card {
             return this;
         }
 
+        /**
+         * Creates a {@link SimpleCard}
+         * @return a new {@link SimpleCard}
+         */
         public SimpleCard create() {
             validate();
             return new SimpleCard(
-                    Objects.requireNonNull(firstSide),
-                    Objects.requireNonNull(secondSide),
+                    Objects.requireNonNull(frontSide),
+                    Objects.requireNonNull(backSide),
                     level,
                     Objects.requireNonNull(lastReview));
         }
@@ -104,6 +149,6 @@ public class SimpleCard implements Card {
 
     @Override
     public String toString() {
-        return "Card:"+firstSide;
+        return String.format("Card<%s:%s>", frontSide, backSide);
     }
 }

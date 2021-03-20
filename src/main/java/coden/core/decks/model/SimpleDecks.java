@@ -26,23 +26,23 @@ public class SimpleDecks implements DecksModel {
     }
 
     @Override
-    public Card createCard(String firstSide, String secondSide) {
+    public Card createCard(String frontSide, String backSide) {
         return new SimpleCard.Builder()
-                .setFirstSide(firstSide)
-                .setSecondSide(secondSide)
+                .setFrontSide(frontSide)
+                .setBackSide(backSide)
                 .setLevel(0)
                 .setLastReview(Instant.now())
                 .create();
     }
 
     @Override
-    public String showFirstSide(Card card) {
-        return card.getFirstSide();
+    public String getFrontSide(Card card) {
+        return card.getFrontSide();
     }
 
     @Override
-    public String showSecondSide(Card card) {
-        return card.getSecondSide();
+    public String getBackSide(Card card) {
+        return card.getBackSide();
     }
 
     @Override
@@ -87,8 +87,8 @@ public class SimpleDecks implements DecksModel {
     }
 
     private List<Card> findReadyCards(Stream<Card> cards){
-        return cards.filter(reminder::shouldRemind)
-                .sorted(Comparator.comparing(reminder::getOvertime).reversed())
+        return cards.filter(reminder::isReady)
+                .sorted(Comparator.comparing(reminder::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
     @Override
@@ -98,8 +98,8 @@ public class SimpleDecks implements DecksModel {
     }
 
     private List<Card> findPendingCards(Stream<Card> cards) {
-        return cards.filter((c) -> !reminder.shouldRemind(c))
-                .sorted(Comparator.comparing(reminder::getOvertime).reversed())
+        return cards.filter(c -> !reminder.isReady(c))
+                .sorted(Comparator.comparing(reminder::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
 
