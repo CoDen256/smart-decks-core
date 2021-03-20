@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="374240bf-7eef-44a4-881a-b08b004458c8" name="Default Changelist" comment="">
+    <list default="true" id="374240bf-7eef-44a4-881a-b08b004458c8" name="Default Changelist" comment="Edit README.md">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/coden/core/decks/reminder/ReminderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/coden/core/decks/reminder/ReminderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/serviceAccountTest.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/serviceAccountTest.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +140,7 @@
       <option name="presentableId" value="Default" />
       <updated>1616268650819</updated>
       <workItem from="1616268662816" duration="28000" />
-      <workItem from="1616268872776" duration="1067000" />
+      <workItem from="1616268872776" duration="1280000" />
     </task>
     <task id="LOCAL-00002" summary="Refactor, remove, rename">
       <created>1616269835916</created>
@@ -147,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616269835916</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Edit README.md">
+      <created>1616269993542</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1616269993542</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -165,6 +174,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fix minor issues" />
     <MESSAGE value="Refactor, remove, rename" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor, remove, rename" />
+    <MESSAGE value="Edit README.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit README.md" />
   </component>
 </project>

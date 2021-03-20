@@ -28,7 +28,5 @@ class ReminderTest {
 
         assertEquals(ChronoUnit.WEEKS.getDuration(), reminder.getNextReminderDelay(9));
         assertEquals(ChronoUnit.WEEKS.getDuration().multipliedBy(2), reminder.getNextReminderDelay(10));
-
-
     }
 }
