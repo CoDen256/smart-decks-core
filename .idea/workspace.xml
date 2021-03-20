@@ -4,7 +4,58 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="374240bf-7eef-44a4-881a-b08b004458c8" name="Default Changelist" comment="Add list for pending cards" />
+    <list default="true" id="374240bf-7eef-44a4-881a-b08b004458c8" name="Default Changelist" comment="Refactor">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/cards.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/cards.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/cards.test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/0/e/0e117f69c02bee790c6a9cfb3c902c6e610713e1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/8/28bdd8669136f7260e81e32924d6a259d972bfc2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/8/382d415015c9d8f6e78ef577ee3f2230f19c26d7" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/f/3fa1ed8f1b4e1b9c233b6023870998c667d79f5c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/4/44b32cefa322ec3b05de4f8b5c1904e5607fc9fd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/3/53c913cc4a5a1cbd5975a585e581707fba45dd9c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/7/573623976e107c66e2e50f2d00902efcc02daf34" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/b/5bbfa66edb4db3c7c33c5181f43510990d3307f9" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/a/6/a626ce1b9ce2466c2bb7daf81c0988f81808fffd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3c616dfd1450bc2800e0158597864bf46640459" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/b/db117b91eac0660bdeb29743d8e02885ad13f0b2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/0/f07866736216be0ee2aba49e392191aeae700a35" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/0/f0ce9208a20ebd9d1f763074c5870c3f31ef115a" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/config/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/config/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/data/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/data/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/data/CardEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/data/SimpleCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/model/CachedModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/model/CachedDecks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/model/DecksModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/model/SimpleModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/model/SimpleDecks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/persistence/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/persistence/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/persistence/fake/FakeDatabase.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/persistence/firebase/Firebase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/persistence/firebase/Firebase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/persistence/firebase/FirebaseCardEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/persistence/firebase/FirebaseCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/persistence/firebase/FirebaseConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/persistence/firebase/FirebaseConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/reminder/BaseReminder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/reminder/BaseReminder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/reminder/Reminder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/reminder/Reminder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/reminder/ReminderLevel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/reminder/ReminderLevel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/reminder/ReminderLevelEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/reminder/ReminderLevelEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/user/UserEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/user/UserEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coden/cards/user/UserNotProvidedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coden/core/decks/user/UserNotProvidedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/firebase.cfg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/reminder.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/serviceAccountKey.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/coden/cards/model/SimpleModelTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/coden/core/decks/model/SimpleModelTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/coden/cards/reminder/ReminderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/coden/core/decks/reminder/ReminderTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,9 +69,28 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="smart-decks-core" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="smart-decks-core" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="smart-decks-core" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -30,15 +100,95 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectId" id="1q2D95fW5l7OfZMC7dA6axNoeo8" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
+  <component name="RunManager" selected="Gradle.SimpleModelTest">
+    <configuration name="ReminderTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;coden.core.decks.reminder.ReminderTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SimpleModelTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;coden.core.decks.model.SimpleModelTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.SimpleModelTest" />
+        <item itemvalue="Gradle.ReminderTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="Fix minor issues">
+      <created>1616253084672</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1616253084672</updated>
+    </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="374240bf-7eef-44a4-881a-b08b004458c8" name="Default Changelist" comment="Add list for pending cards" />
+      <created>1616268650819</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616268650819</updated>
+      <workItem from="1616268662816" duration="28000" />
+      <workItem from="1616268872776" duration="878000" />
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -52,5 +202,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix minor issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix minor issues" />
   </component>
 </project>

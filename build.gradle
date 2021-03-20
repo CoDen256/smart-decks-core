@@ -1,12 +1,24 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
 }
 
 group = 'coden'
 version = '0.0.7-SNAPSHOT'
 
+
+ext {
+    publishArtifactid = 'multitran-api'
+    publishGroupId = group
+    publishVersion = version
+}
+
 repositories {
     mavenCentral()
+}
+
+jar {
+    enabled = true
 }
 
 dependencies {
@@ -17,4 +29,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing{
+    publications {
+        maven(MavenPublication){
+            groupId = publishGroupId
+            artifactId = publishArtifactid
+            version = publishVersion
+
+            from components.java
+        }
+    }
 }
