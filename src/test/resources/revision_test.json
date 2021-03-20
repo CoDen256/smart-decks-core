@@ -1,0 +1,23 @@
+[
+  {
+    "levels": [0],
+    "delayToRevision": "PT1M"
+  },
+  {
+    "levels": [1],
+    "delayToRevision": "PT1H"
+  },
+
+  {
+    "levels": [2,3,4,5,6,7,8],
+    "delayToRevision": "P1D"
+  },
+  {
+    "levels": [9],
+    "delayToRevision": "P7D"
+  },
+  {
+    "levels": [10],
+    "delayToRevision": "P14D"
+  }
+]

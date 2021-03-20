@@ -1,7 +1,7 @@
 package coden.core.decks.model;
 
 import coden.core.decks.data.Card;
-import coden.core.decks.reminder.Reminder;
+import coden.core.decks.revision.RevisionManagerImpl;
 import coden.core.decks.user.User;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public interface DecksModel {
     /**
      * Returns the next card to be learned. Next card has the biggest deadline of review, i.e
      * it should be the first one to be reviewed.
-     * @see Reminder#getTimeToNextRevision
+     * @see RevisionManagerImpl#getTimeToNextRevision
      * @return the request obtaining the next card to review
      */
     CompletableFuture<Card> getNextCard();

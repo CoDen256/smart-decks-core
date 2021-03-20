@@ -7,7 +7,7 @@ import coden.core.decks.data.Card;
 import coden.core.decks.data.SimpleCard;
 import coden.core.decks.persistence.Database;
 import coden.core.decks.persistence.firebase.Firebase;
-import coden.core.decks.reminder.Reminder;
+import coden.core.decks.revision.RevisionManagerImpl;
 import coden.core.decks.user.UserEntry;
 import java.io.InputStream;
 import java.time.Instant;
@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
 
 class SimpleModelTest {
 
-    private static Reminder reminder = null;
+    private static RevisionManagerImpl revisionManagerImpl = null;
     private static Database firebase = null;
 
     @BeforeAll
     static void beforeAll() throws Exception{
-        reminder = new Reminder(read("/reminder_test.json"));
+        revisionManagerImpl = new RevisionManagerImpl(read("/revision_test.json"));
         firebase = new Firebase(
                 read("/serviceAccountTest.json"),
                 read("/firebase_test.cfg"));
@@ -38,7 +38,7 @@ class SimpleModelTest {
 
     @Test
     void testAddAndGet() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), reminder, firebase);
+        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         final CompletableFuture<List<Card>> cardsFuture = cardModel.getAllCards();
@@ -53,7 +53,7 @@ class SimpleModelTest {
 
     @Test
     void testDeleteEntry() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), reminder, firebase);
+        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         cardModel.deleteCard(card).get(5, TimeUnit.SECONDS);
@@ -65,12 +65,12 @@ class SimpleModelTest {
 
     @Test
     void testComplexQueries() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), reminder, firebase);
+        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
 
         final Card card = new SimpleCard.Builder()
                 .setFrontSide("einsehen")
                 .setBackSide("понять, изучить, убедиться")
-                .setLevel(reminder.getMaxLevel())
+                .setLevel(revisionManagerImpl.getMaxLevel())
                 .setLastReview(Instant.now())
                 .create();
 
@@ -81,7 +81,7 @@ class SimpleModelTest {
         final List<Card> learnedCards = learnedCardsFuture.get(5, TimeUnit.SECONDS);
         assertEquals(1, learnedCards.size());
         final Card doneCard = learnedCards.get(0);
-        assertEquals(reminder.getMaxLevel(), doneCard.getLevel());
+        assertEquals(revisionManagerImpl.getMaxLevel(), doneCard.getLevel());
         assertEquals("einsehen", doneCard.getFrontSide());
         assertEquals("понять, изучить, убедиться", doneCard.getBackSide());
         assertTrue(card.getLastReview().isBefore(doneCard.getLastReview()));
@@ -91,7 +91,7 @@ class SimpleModelTest {
     void testGetNext() throws InterruptedException, ExecutionException, TimeoutException {
         // Setup
         final UserEntry randomUser = getRandomUser();
-        final DecksModel decksModel = new SimpleDecks(randomUser, reminder, firebase);
+        final DecksModel decksModel = new SimpleDecks(randomUser, revisionManagerImpl, firebase);
 
         final Card newCard1 = new SimpleCard.Builder(createRandomCard(decksModel))
                 .setFrontSide("15 Minutes")
@@ -111,12 +111,12 @@ class SimpleModelTest {
         decksModel.addCard(newCard1).get(5, TimeUnit.SECONDS);
         decksModel.addCard(newCard2).get(5, TimeUnit.SECONDS);
         decksModel.addCard(newCard3).get(5, TimeUnit.SECONDS);
-        assertTrue(reminder.isReady(newCard1));
-        assertTrue(reminder.isReady(newCard2));
-        assertTrue(reminder.isReady(newCard3));
+        assertTrue(revisionManagerImpl.isReady(newCard1));
+        assertTrue(revisionManagerImpl.isReady(newCard2));
+        assertTrue(revisionManagerImpl.isReady(newCard3));
 
         // Execute
-        final CachedDecks cachedCardModel = new CachedDecks(randomUser, reminder, firebase, 1);
+        final CachedDecks cachedCardModel = new CachedDecks(randomUser, revisionManagerImpl, firebase, 1);
         final CompletableFuture<List<Card>> readyCards = cachedCardModel.getReadyCards();
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());

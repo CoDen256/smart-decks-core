@@ -1,13 +1,18 @@
-package coden.core.decks.reminder;
+package coden.core.decks.revision;
 
 import java.time.Duration;
 import java.util.Objects;
 
-public class ReminderLevel {
+/**
+ * The actual level of revision.
+ */
+public class RevisionLevel {
+    /** The level of corresponding revision level */
     private int level;
+    /** The time to next revision for the given level */
     private Duration delayToNextRevision;
 
-    public ReminderLevel(int level, Duration delayToNextRevision) {
+    public RevisionLevel(int level, Duration delayToNextRevision) {
         this.level = level;
         this.delayToNextRevision = delayToNextRevision;
     }
@@ -31,8 +36,8 @@ public class ReminderLevel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ReminderLevel)) return false;
-        ReminderLevel that = (ReminderLevel) o;
+        if (!(o instanceof RevisionLevel)) return false;
+        RevisionLevel that = (RevisionLevel) o;
         return level == that.level;
     }
 

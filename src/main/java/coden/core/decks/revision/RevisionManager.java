@@ -1,4 +1,4 @@
-package coden.core.decks.reminder;
+package coden.core.decks.revision;
 
 import coden.core.decks.data.Card;
 
@@ -6,10 +6,10 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * The represents basic reminder. The {@code BaseReminder} can be used to manage the current
+ * The represents basic revision manager. The {@code RevisionManager} can be used to manage the current
  * level of the cards, their last review time and the next required review time.
  */
-public interface BaseReminder {
+public interface RevisionManager {
     /**
      * Returns the minimal possible level of memorizing progress of a card
      *

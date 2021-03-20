@@ -1,7 +1,7 @@
 package coden.core.decks.model;
 
 import coden.core.decks.persistence.Database;
-import coden.core.decks.reminder.BaseReminder;
+import coden.core.decks.revision.RevisionManager;
 import coden.core.decks.data.Card;
 import coden.core.decks.user.User;
 
@@ -21,7 +21,7 @@ public class CachedDecks extends SimpleDecks {
 
     private CompletableFuture<Deque<Card>> newCache;
 
-    public CachedDecks(User user, BaseReminder reminder, Database database, int pollMinutes) {
+    public CachedDecks(User user, RevisionManager reminder, Database database, int pollMinutes) {
         super(user, reminder, database);
         updateNewCache();
         runScheduler(pollMinutes, pollMinutes);

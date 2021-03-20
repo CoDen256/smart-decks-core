@@ -1,25 +1,27 @@
 package coden.core.decks.model;
 
 import coden.core.decks.persistence.Database;
-import coden.core.decks.reminder.BaseReminder;
+import coden.core.decks.revision.RevisionManager;
 import coden.core.decks.data.Card;
 import coden.core.decks.data.SimpleCard;
 import coden.core.decks.user.User;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SimpleDecks implements DecksModel {
 
     private final Database database;
-    private final BaseReminder reminder;
+    private final RevisionManager reminder;
     private User user;
 
-    public SimpleDecks(User user, BaseReminder reminder, Database database) {
+    public SimpleDecks(User user, RevisionManager reminder, Database database) {
         this.database = database;
         this.reminder = reminder;
         setUser(user);
@@ -88,7 +90,7 @@ public class SimpleDecks implements DecksModel {
 
     private List<Card> findReadyCards(Stream<Card> cards){
         return cards.filter(reminder::isReady)
-                .sorted(Comparator.comparing(reminder::getTimeToNextRevision).reversed())
+                .sorted(Comparator.comparing((Function<Card, Duration>) reminder::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
     @Override
@@ -99,7 +101,7 @@ public class SimpleDecks implements DecksModel {
 
     private List<Card> findPendingCards(Stream<Card> cards) {
         return cards.filter(c -> !reminder.isReady(c))
-                .sorted(Comparator.comparing(reminder::getTimeToNextRevision).reversed())
+                .sorted(Comparator.comparing((Function<Card, Duration>) reminder::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
 

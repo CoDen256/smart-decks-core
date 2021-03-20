@@ -1,4 +1,4 @@
-package coden.core.decks.reminder;
+package coden.core.decks.revision;
 
 import coden.core.decks.data.Card;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,67 +7,80 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-public class Reminder implements BaseReminder {
+/**
+ * The actual implementation of {@link RevisionManager} that reads
+ * from the given config file, which contains the revision levels and their corresponding
+ * delays.
+ *
+ * @see RevisionLevel
+ */
+public class RevisionManagerImpl implements RevisionManager {
+    /** The revision levels */
+    private final Set<RevisionLevel> levels = new HashSet<>();
 
-    private final List<ReminderLevel> levels = new LinkedList<>();
-
-    public Reminder(InputStream is) throws IOException {
+    /**
+     * Creates a new revision manager from the given config by deserializing the config to
+     * array of {@link RevisionConfigEntry} and creating correspongin {@link RevisionLevel}s
+     *
+     * @param is
+     *         the input stream of config
+     * @throws IOException
+     *         if the deserializing fails
+     */
+    public RevisionManagerImpl(InputStream is) throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final ReminderLevelEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), ReminderLevelEntry[].class);
+        final RevisionConfigEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), RevisionConfigEntry[].class);
 
-        for (ReminderLevelEntry entry : entries) {
+        for (RevisionConfigEntry entry : entries) {
             for (int level : entry.getLevels()) {
-                addLevel(entry, level);
+                addLevel(entry.getDelayToRevision(), level);
             }
         }
     }
 
-    private void addLevel(ReminderLevelEntry entry, int level) throws IOException {
-        final Duration amount = Duration.parse(entry.getDurationString());
-        final ReminderLevel newLevel = new ReminderLevel(level, amount);
-        if (levels.contains(newLevel)) throw new IOException("Found two reminder level entries with the same levels");
-        levels.add(newLevel);
-    }
-
     /**
-     * Parses the duration given in unit string {@link }
-     * @param unit
-     * @param amount
-     * @return
+     * Adds a new {@link RevisionLevel} from the given delay to next revision and the given level
+     *
+     * @param delayToNextRevision
+     *         the string representing delay to next revision
+     * @param level
+     *         the level
      * @throws IOException
+     *         if such a revision level already exists
      */
-    private Duration parseTemporalAmount(String unit, int amount) {
-        Duration.parse()
-        ChronoUnit chronoUnit = ChronoUnit.valueOf(unit);
-        return chronoUnit.getDuration().multipliedBy(amount);
+    private void addLevel(String delayToNextRevision, int level) throws IOException {
+        Duration amount = Duration.parse(delayToNextRevision);
+        RevisionLevel newLevel = new RevisionLevel(level, amount);
+        if (levels.contains(newLevel)) throw new IOException("Found two revision level entries with the same levels");
+        levels.add(newLevel);
     }
 
     @Override
     public int getMinLevel() {
         return levels.stream()
-                .min(Comparator.comparing(ReminderLevel::getLevel))
-                .map(ReminderLevel::getLevel)
+                .min(Comparator.comparing(RevisionLevel::getLevel))
+                .map(RevisionLevel::getLevel)
                 .orElse(0);
     }
 
     @Override
     public int getMaxLevel() {
         return levels.stream()
-                .max(Comparator.comparing(ReminderLevel::getLevel))
-                .map(ReminderLevel::getLevel)
+                .max(Comparator.comparing(RevisionLevel::getLevel))
+                .map(RevisionLevel::getLevel)
                 .orElse(0);
     }
 
     /**
      * Returns the {@link Duration} till next revision time for the given level.
      * The delay time is specified in config.
+     *
      * @param level
      *         the review level of the card
      * @return the delay time for the given level.
@@ -77,12 +90,13 @@ public class Reminder implements BaseReminder {
         return levels.stream()
                 .filter(entry -> entry.getLevel() == level)
                 .findAny()
-                .map(ReminderLevel::getDelayToNextRevision)
+                .map(RevisionLevel::getDelayToNextRevision)
                 .orElseThrow(() -> new RuntimeException("Unable to get next reminder delay"));
     }
 
     /**
      * Returns the {@link Duration} between {@link Instant#now()} and next revision time
+     *
      * @param card
      *         the card
      * @return the duration till next revision time for the given card.
