@@ -87,19 +87,19 @@ public class Firebase implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> deleteEntry(Card entry) throws UserNotProvidedException{
+    public CompletableFuture<Void> deleteEntry(Card card) throws UserNotProvidedException{
         final ApiFuture<WriteResult> deleteFuture = getCards()
-                .document(entry.getFrontSide())
+                .document(card.getFrontSide())
                 .delete();
         return createCompletableFuture(deleteFuture)
                 .thenApply(writeResult -> null);
     }
 
     @Override
-    public CompletableFuture<Void> addOrUpdateEntry(Card entry){
+    public CompletableFuture<Void> addOrUpdateEntry(Card card){
         final ApiFuture<WriteResult> addOrUpdateFuture = getCards()
-                .document(entry.getFrontSide())
-                .set(entry);
+                .document(card.getFrontSide())
+                .set(card);
         return createCompletableFuture(addOrUpdateFuture)
                 .thenApply(writeResult -> null);
     }
