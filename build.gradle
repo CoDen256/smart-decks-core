@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'coden'
-version = '2.0.0'
+version = '2.0.2'
 
 
 ext {
@@ -22,9 +22,9 @@ jar {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
-    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '6.11.0'
-    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+    runtimeOnly group: 'com.google.firebase', name: 'firebase-admin', version: '6.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 }
 
 test {
