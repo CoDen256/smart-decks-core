@@ -6,6 +6,10 @@ plugins {
 group = 'coden'
 version = '2.0.2'
 
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 ext {
     publishArtifactid = 'smart-decks-core'
@@ -32,6 +36,8 @@ test {
 }
 
 publishing{
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
     publications {
         maven(MavenPublication){
             groupId = publishGroupId
