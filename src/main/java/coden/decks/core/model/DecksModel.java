@@ -83,7 +83,7 @@ public interface DecksModel {
     /**
      * Deletes the given card. Makes an asynchronous request to the server. 
      * As unique identifier the front side of the card is used.
-     * @see Card#getFrontSide()
+     * @see Card#getFirstSide()
      * @param card the card to delete
      * @return the request made to the server
      */

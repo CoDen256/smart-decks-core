@@ -13,14 +13,14 @@ public interface Card {
      *
      * @return the front side
      */
-    String getFrontSide();
+    String getFirstSide();
 
     /**
      * Returns the back side of the card. This side will be usually hidden from the user
      *
      * @return the back side
      */
-    String getBackSide();
+    String getSecondSide();
 
     /**
      * Returns the level of the card. The level represents the current level of progress

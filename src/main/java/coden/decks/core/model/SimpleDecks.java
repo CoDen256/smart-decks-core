@@ -39,12 +39,12 @@ public class SimpleDecks implements DecksModel {
 
     @Override
     public String getFrontSide(Card card) {
-        return card.getFrontSide();
+        return card.getFirstSide();
     }
 
     @Override
     public String getBackSide(Card card) {
-        return card.getBackSide();
+        return card.getSecondSide();
     }
 
     @Override

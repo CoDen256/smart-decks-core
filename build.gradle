@@ -22,8 +22,8 @@ jar {
 }
 
 dependencies {
-    runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
-    runtimeOnly group: 'com.google.firebase', name: 'firebase-admin', version: '6.11.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+    implementation 'com.google.firebase:firebase-admin:6.11.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 }
 

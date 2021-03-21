@@ -34,12 +34,12 @@ public class FirebaseCard implements Card {
     }
 
     @Override
-    public String getFrontSide() {
+    public String getFirstSide() {
         return frontSide;
     }
 
     @Override
-    public String getBackSide() {
+    public String getSecondSide() {
         return backSide;
     }
 

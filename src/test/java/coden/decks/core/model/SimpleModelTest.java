@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import coden.decks.core.data.Card;
 import coden.decks.core.data.SimpleCard;
+import coden.decks.core.firebase.FirebaseConfig;
 import coden.decks.core.persistence.Database;
 import coden.decks.core.firebase.Firebase;
 import coden.decks.core.revision.RevisionManagerImpl;
@@ -32,8 +33,8 @@ class SimpleModelTest {
     static void beforeAll() throws Exception{
         revisionManagerImpl = new RevisionManagerImpl(read("/revision_test.json"));
         firebase = new Firebase(
-                read("/serviceAccountTest_deprecated.json"),
-                read("/firebase_test_deprecated.cfg"));
+                new FirebaseConfig(read("/firebase_test_deprecated.cfg")),
+                read("/serviceAccountTest_deprecated.json"));
     }
 
     @Test
@@ -45,8 +46,8 @@ class SimpleModelTest {
         final List<Card> cards = cardsFuture.get(5, TimeUnit.SECONDS);
         assertEquals(1, cards.size());
         final Card actual = cards.get(0);
-        assertEquals(card.getFrontSide(), actual.getFrontSide());
-        assertEquals(card.getBackSide(), actual.getBackSide());
+        assertEquals(card.getFirstSide(), actual.getFirstSide());
+        assertEquals(card.getSecondSide(), actual.getSecondSide());
         assertEquals(card.getLevel(), actual.getLevel());
         assertEquals(card.getLastReview(), actual.getLastReview());
     }
@@ -82,8 +83,8 @@ class SimpleModelTest {
         assertEquals(1, learnedCards.size());
         final Card doneCard = learnedCards.get(0);
         assertEquals(revisionManagerImpl.getMaxLevel(), doneCard.getLevel());
-        assertEquals("einsehen", doneCard.getFrontSide());
-        assertEquals("понять, изучить, убедиться", doneCard.getBackSide());
+        assertEquals("einsehen", doneCard.getFirstSide());
+        assertEquals("понять, изучить, убедиться", doneCard.getSecondSide());
         assertTrue(card.getLastReview().isBefore(doneCard.getLastReview()));
     }
 
@@ -121,13 +122,13 @@ class SimpleModelTest {
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());
         final Card card = cards.get(0);
-        assertEquals(newCard1.getFrontSide(), card.getFrontSide());
-        Assertions.assertEquals(newCard1.getFrontSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFrontSide());
-        Assertions.assertEquals(newCard2.getFrontSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFrontSide());
-        Assertions.assertEquals(newCard3.getFrontSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFrontSide());
+        assertEquals(newCard1.getFirstSide(), card.getFirstSide());
+        Assertions.assertEquals(newCard1.getFirstSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFirstSide());
+        Assertions.assertEquals(newCard2.getFirstSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFirstSide());
+        Assertions.assertEquals(newCard3.getFirstSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFirstSide());
     }
 
     private UserEntry getRandomUser() {
