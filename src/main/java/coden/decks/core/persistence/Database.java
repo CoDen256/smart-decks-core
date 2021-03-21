@@ -56,7 +56,7 @@ public interface Database extends Closeable {
 
     /**
      * Creates an asynchronous request to add or update a given card.
-     * As id the {@link Card#getFirstSide()} is used
+     * As id the {@link Card#getFrontSide()} is used
      *
      * @param card
      *         the card to be added

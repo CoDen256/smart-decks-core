@@ -42,22 +42,22 @@ class SimpleModelTest {
 
     @Test
     void testAddAndGet() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
+        final Decks cardModel = new Decks(getRandomUser(), revisionManagerImpl, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         final CompletableFuture<List<Card>> cardsFuture = cardModel.getAllCards();
         final List<Card> cards = cardsFuture.get(5, TimeUnit.SECONDS);
         assertEquals(1, cards.size());
         final Card actual = cards.get(0);
-        assertEquals(card.getFirstSide(), actual.getFirstSide());
-        assertEquals(card.getSecondSide(), actual.getSecondSide());
+        assertEquals(card.getFrontSide(), actual.getFrontSide());
+        assertEquals(card.getBackSide(), actual.getBackSide());
         assertEquals(card.getLevel(), actual.getLevel());
         assertEquals(card.getLastReview(), actual.getLastReview());
     }
 
     @Test
     void testDeleteEntry() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
+        final Decks cardModel = new Decks(getRandomUser(), revisionManagerImpl, firebase);
         final Card card = createRandomCard(cardModel);
         cardModel.addCard(card).get(5, TimeUnit.SECONDS);
         cardModel.deleteCard(card).get(5, TimeUnit.SECONDS);
@@ -69,7 +69,7 @@ class SimpleModelTest {
 
     @Test
     void testComplexQueries() throws Exception {
-        final SimpleDecks cardModel = new SimpleDecks(getRandomUser(), revisionManagerImpl, firebase);
+        final Decks cardModel = new Decks(getRandomUser(), revisionManagerImpl, firebase);
 
         final Card card = new SimpleCard.Builder()
                 .setFrontSide("einsehen")
@@ -86,8 +86,8 @@ class SimpleModelTest {
         assertEquals(1, learnedCards.size());
         final Card doneCard = learnedCards.get(0);
         assertEquals(revisionManagerImpl.getMaxLevel(), doneCard.getLevel());
-        assertEquals("einsehen", doneCard.getFirstSide());
-        assertEquals("понять, изучить, убедиться", doneCard.getSecondSide());
+        assertEquals("einsehen", doneCard.getFrontSide());
+        assertEquals("понять, изучить, убедиться", doneCard.getBackSide());
         assertTrue(card.getLastReview().isBefore(doneCard.getLastReview()));
     }
 
@@ -95,7 +95,7 @@ class SimpleModelTest {
     void testGetNext() throws InterruptedException, ExecutionException, TimeoutException {
         // Setup
         final UserEntry randomUser = getRandomUser();
-        final DecksModel decksModel = new SimpleDecks(randomUser, revisionManagerImpl, firebase);
+        final DecksModel decksModel = new Decks(randomUser, revisionManagerImpl, firebase);
 
         final Card newCard1 = new SimpleCard.Builder(createRandomCard(decksModel))
                 .setFrontSide("15 Minutes")
@@ -125,13 +125,13 @@ class SimpleModelTest {
         final List<Card> cards = readyCards.get(5, TimeUnit.SECONDS);
         assertEquals(3, cards.size());
         final Card card = cards.get(0);
-        assertEquals(newCard1.getFirstSide(), card.getFirstSide());
-        Assertions.assertEquals(newCard1.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
-        Assertions.assertEquals(newCard2.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
-        Assertions.assertEquals(newCard3.getFirstSide(), cachedCardModel.getNextCard()
-                .get(5, TimeUnit.SECONDS).getFirstSide());
+        assertEquals(newCard1.getFrontSide(), card.getFrontSide());
+        Assertions.assertEquals(newCard1.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
+        Assertions.assertEquals(newCard2.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
+        Assertions.assertEquals(newCard3.getFrontSide(), cachedCardModel.getNextCard()
+                .get(5, TimeUnit.SECONDS).getFrontSide());
     }
 
     private UserEntry getRandomUser() {
@@ -143,6 +143,6 @@ class SimpleModelTest {
     }
 
     private static InputStream read(String path){
-        return SimpleDecks.class.getResourceAsStream(path);
+        return Decks.class.getResourceAsStream(path);
     }
 }

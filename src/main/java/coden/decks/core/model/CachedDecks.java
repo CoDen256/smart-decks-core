@@ -1,8 +1,8 @@
 package coden.decks.core.model;
 
+import coden.decks.core.data.Card;
 import coden.decks.core.persistence.Database;
 import coden.decks.core.revision.RevisionManager;
-import coden.decks.core.data.Card;
 import coden.decks.core.user.User;
 
 import java.util.Deque;
@@ -13,7 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class CachedDecks extends SimpleDecks {
+/**
+ * Represents the {@link DecksModel} but with caching and optimizing fetching of the next card.
+ */
+public class CachedDecks extends Decks {
 
     public static final int MIN_SIZE = 2;
 
@@ -36,15 +39,16 @@ public class CachedDecks extends SimpleDecks {
      * Returns a next card. Two possible cases can occur:
      * 1) Cache is empty or new cache is done:
      * Take newCache future and update cache with it (on complete)
-     *
+     * <p>
      * 2) Cache is not empty:
      * Wrap existing cache with completable future
-     *
+     * <p>
      * Ultimately:
      * Check if cache's size is minimum
-     *  - if true assign to newCache a new future (if previous future was done)
-     *  - if false do nothing
+     * - if true assign to newCache a new future (if previous future was done)
+     * - if false do nothing
      * Pop last element (never null, because is not empty)
+     *
      * @return the next element from ready cards
      */
     @Override
@@ -63,10 +67,9 @@ public class CachedDecks extends SimpleDecks {
         // * WHEN IT IS MINIMUM
         // * EVERY SCHEDULED CALL
         // * ON START
-        if (cache.isEmpty()){
+        if (cache.isEmpty()) {
             cacheToQuery = newCache;
-        }
-        else {
+        } else {
             cacheToQuery = createCompletableFuture(cache);
         }
         return cacheToQuery
@@ -76,14 +79,14 @@ public class CachedDecks extends SimpleDecks {
     }
 
 
-    private Deque<Card> updateNewCacheOnMinimum(Deque<Card> cache){
-        if (isMinimumSize(cache)){
+    private Deque<Card> updateNewCacheOnMinimum(Deque<Card> cache) {
+        if (isMinimumSize(cache)) {
             updateNewCache();
         }
         return cache;
     }
 
-    private void updateNewCache(){
+    private void updateNewCache() {
         if (newCache == null || newCache.isDone())
             // if not updated, new cache will be queried from last check for minimum,
             // but the real cache will be returned, and this one will be returned only when
@@ -91,16 +94,16 @@ public class CachedDecks extends SimpleDecks {
             newCache = createNewCache().thenApply(this::updateCacheWithNew);
     }
 
-    private Deque<Card> updateCacheWithNew(Deque<Card> newCache){
+    private Deque<Card> updateCacheWithNew(Deque<Card> newCache) {
         cache.clear();
         cache.addAll(newCache);
         return cache;
     }
 
-    private Card popEmptyToNull(Deque<Card> deque){
+    private Card popEmptyToNull(Deque<Card> deque) {
         try {
             return deque.pop();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return null;
         }
     }
@@ -109,7 +112,7 @@ public class CachedDecks extends SimpleDecks {
         return getReadyCards().thenApply(LinkedList::new);
     }
 
-    private <T> CompletableFuture<T> createCompletableFuture(T value){
+    private <T> CompletableFuture<T> createCompletableFuture(T value) {
         final CompletableFuture<T> cardFuture = new CompletableFuture<T>();
         cardFuture.complete(value);
         return cardFuture;
@@ -117,9 +120,7 @@ public class CachedDecks extends SimpleDecks {
 
     // maybe do not update on every on minimum check, instead update newCache only once, and then
     // it will be returned on empty
-    private boolean isMinimumSize(Deque<Card> cache){
+    private boolean isMinimumSize(Deque<Card> cache) {
         return cache.size() < MIN_SIZE;
     }
-
-
 }

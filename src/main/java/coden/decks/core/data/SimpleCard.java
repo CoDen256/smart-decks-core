@@ -48,8 +48,8 @@ public class SimpleCard implements Card {
      *         the original card
      */
     public SimpleCard(Card card) {
-        this.frontSide = card.getFirstSide();
-        this.backSide = card.getSecondSide();
+        this.frontSide = card.getFrontSide();
+        this.backSide = card.getBackSide();
         this.level = card.getLevel();
         this.lastReview = card.getLastReview();
     }
@@ -59,12 +59,12 @@ public class SimpleCard implements Card {
     }
 
     @Override
-    public String getFirstSide() {
+    public String getFrontSide() {
         return frontSide;
     }
 
     @Override
-    public String getSecondSide() {
+    public String getBackSide() {
         return backSide;
     }
 
@@ -99,8 +99,8 @@ public class SimpleCard implements Card {
          * @param card the original card
          */
         public Builder(Card card) {
-            setFrontSide(card.getFirstSide());
-            setBackSide(card.getSecondSide());
+            setFrontSide(card.getFrontSide());
+            setBackSide(card.getBackSide());
             setLastReview(card.getLastReview());
             setLevel(card.getLevel());
         }
