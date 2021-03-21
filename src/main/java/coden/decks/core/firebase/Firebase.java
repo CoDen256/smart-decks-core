@@ -85,7 +85,7 @@ public class Firebase implements Database {
      */
     @Override
     public void setUser(User user) {
-        if (!this.user.equals(user)) {
+        if (!Objects.equals(this.user, user)) {
             this.user = Objects.requireNonNull(user);
             this.deck = null;
         }
@@ -219,7 +219,7 @@ public class Firebase implements Database {
      *         the document snapshot
      * @return the firebase card
      */
-    private FirebaseCard toFirebaseCardEntry(QueryDocumentSnapshot snapshot) {
+    protected Card toFirebaseCardEntry(QueryDocumentSnapshot snapshot) {
         return snapshot.toObject(FirebaseCard.class);
     }
 }
