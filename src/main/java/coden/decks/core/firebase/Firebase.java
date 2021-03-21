@@ -225,8 +225,11 @@ public class Firebase implements Database {
         return snapshot.toObject(FirebaseCard.class);
     }
 
+    /**
+     * Closes the firebase and deletes the created app.
+     */
     @Override
-    public void close() throws IOException {
+    public void close(){
         firebaseApp.delete();
     }
 }
