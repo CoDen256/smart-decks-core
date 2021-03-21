@@ -33,8 +33,8 @@ class SimpleModelTest {
     static void beforeAll() throws Exception{
         revisionManagerImpl = new RevisionManagerImpl(read("/revision_test.json"));
         firebase = new Firebase(
-                new FirebaseConfig(read("/firebase_test_deprecated.cfg")),
-                read("/serviceAccountTest_deprecated.json"));
+                new FirebaseConfig(read("/firebase_test.cfg")),
+                read("/serviceAccountTest.json"));
     }
 
     @Test

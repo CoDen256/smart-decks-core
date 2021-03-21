@@ -38,6 +38,8 @@ public class Firebase implements Database {
     private User user;
     /** The collection referencing the deck collection containing all the cards */
     private CollectionReference deck;
+    /** The Firebase Application */
+    private FirebaseApp firebaseApp;
 
     /**
      * Creates a new {@code Firebase}
@@ -73,7 +75,7 @@ public class Firebase implements Database {
                 .setDatabaseUrl(url)
                 .build();
 
-        FirebaseApp.initializeApp(options);
+        firebaseApp = FirebaseApp.initializeApp(options);
         return FirestoreClient.getFirestore();
     }
 
@@ -208,7 +210,7 @@ public class Firebase implements Database {
     private Stream<Card> fetchDocumentsAsCards(QuerySnapshot snapshot) {
         return snapshot.getDocuments()
                 .stream()
-                .map(this::toFirebaseCardEntry);
+                .map(this::toFirebaseCard);
     }
 
     /**
@@ -219,7 +221,12 @@ public class Firebase implements Database {
      *         the document snapshot
      * @return the firebase card
      */
-    protected Card toFirebaseCardEntry(QueryDocumentSnapshot snapshot) {
+    private FirebaseCard toFirebaseCard(QueryDocumentSnapshot snapshot) {
         return snapshot.toObject(FirebaseCard.class);
+    }
+
+    @Override
+    public void close() throws IOException {
+        firebaseApp.delete();
     }
 }

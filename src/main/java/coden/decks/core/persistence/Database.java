@@ -3,6 +3,7 @@ package coden.decks.core.persistence;
 import coden.decks.core.data.Card;
 import coden.decks.core.user.User;
 
+import java.io.Closeable;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -10,7 +11,7 @@ import java.util.stream.Stream;
  * Represents a database interface, that can be used to perform different
  * operations on {@link Card}s: fetch, add, update, delete etc.
  */
-public interface Database {
+public interface Database extends Closeable {
     /**
      * Sets a given user for the current database connection
      *
