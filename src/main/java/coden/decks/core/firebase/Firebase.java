@@ -1,6 +1,7 @@
 package coden.decks.core.firebase;
 
 import coden.decks.core.data.Card;
+import coden.decks.core.persistence.CardMapper;
 import coden.decks.core.persistence.Database;
 import coden.decks.core.user.User;
 import coden.decks.core.user.UserNotProvidedException;
@@ -9,8 +10,8 @@ import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -33,6 +34,8 @@ public class Firebase implements Database {
     private final FirebaseConfig config;
     /** The internal interface to make the requests */
     private final Firestore firestore;
+    /** The mapper that maps internal {@link DocumentSnapshot} to {@link Card} */
+    private final CardMapper<DocumentSnapshot> mapper;
 
     /** The current user of the collections */
     private User user;
@@ -51,11 +54,10 @@ public class Firebase implements Database {
      * @throws IOException
      *         on creating a {@link Firestore}
      */
-    public Firebase(FirebaseConfig config, InputStream serviceAccount) throws IOException {
-        Objects.requireNonNull(serviceAccount);
-        Objects.requireNonNull(config);
-        this.config = config;
-        this.firestore = createFirestore(serviceAccount, config.url);
+    public Firebase(CardMapper<DocumentSnapshot> mapper, FirebaseConfig config, InputStream serviceAccount) throws IOException {
+        this.mapper = Objects.requireNonNull(mapper);
+        this.config = Objects.requireNonNull(config);
+        this.firestore = createFirestore(Objects.requireNonNull(serviceAccount), config.url);
     }
 
     /**
@@ -210,19 +212,7 @@ public class Firebase implements Database {
     private Stream<Card> fetchDocumentsAsCards(QuerySnapshot snapshot) {
         return snapshot.getDocuments()
                 .stream()
-                .map(this::toFirebaseCard);
-    }
-
-    /**
-     * Converts a {@link QueryDocumentSnapshot} to {@link FirebaseCard} by deserializing
-     * the response
-     *
-     * @param snapshot
-     *         the document snapshot
-     * @return the firebase card
-     */
-    private FirebaseCard toFirebaseCard(QueryDocumentSnapshot snapshot) {
-        return snapshot.toObject(FirebaseCard.class);
+                .map(mapper::toCard);
     }
 
     /**
