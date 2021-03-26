@@ -1,4 +1,4 @@
-package coden.decks.core.persistence;
+package coden.decks.core.data;
 
 import coden.decks.core.data.Card;
 
@@ -18,5 +18,5 @@ public interface CardMapper<T> {
      *         the internal representation
      * @return a {@link Card}
      */
-    Card toCard(T source);
+    Card map(T source);
 }

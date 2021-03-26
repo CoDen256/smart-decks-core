@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * Represents a database interface, that can be used to perform different
  * operations on {@link Card}s: fetch, add, update, delete etc.
  */
-public interface Database extends Closeable {
+public interface Database extends AutoCloseable {
     /**
      * Sets a given user for the current database connection
      *

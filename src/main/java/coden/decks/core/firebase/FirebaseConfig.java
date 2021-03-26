@@ -12,6 +12,7 @@ public class FirebaseConfig extends Config {
 
     /** The url of the firebase */
     public final String url = getString("firebase.url");
+
     /** The user collection containing decks */
     public final String userCollection = getString("firebase.userCollection");
     /** The decks collection */

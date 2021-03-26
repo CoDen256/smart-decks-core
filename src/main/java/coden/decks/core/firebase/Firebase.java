@@ -1,7 +1,7 @@
 package coden.decks.core.firebase;
 
 import coden.decks.core.data.Card;
-import coden.decks.core.persistence.CardMapper;
+import coden.decks.core.data.CardMapper;
 import coden.decks.core.persistence.Database;
 import coden.decks.core.user.User;
 import coden.decks.core.user.UserNotProvidedException;
@@ -15,7 +15,6 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
@@ -41,8 +40,6 @@ public class Firebase implements Database {
     private User user;
     /** The collection referencing the deck collection containing all the cards */
     private CollectionReference deck;
-    /** The Firebase Application */
-    private FirebaseApp firebaseApp;
 
     /**
      * Creates a new {@code Firebase}
@@ -77,7 +74,6 @@ public class Firebase implements Database {
                 .setDatabaseUrl(url)
                 .build();
 
-        firebaseApp = FirebaseApp.initializeApp(options);
         return FirestoreClient.getFirestore();
     }
 
@@ -212,14 +208,14 @@ public class Firebase implements Database {
     private Stream<Card> fetchDocumentsAsCards(QuerySnapshot snapshot) {
         return snapshot.getDocuments()
                 .stream()
-                .map(mapper::toCard);
+                .map(mapper::map);
     }
 
     /**
      * Closes the firebase and deletes the created app.
      */
     @Override
-    public void close(){
-        firebaseApp.delete();
+    public void close() throws Exception {
+        firestore.close();
     }
 }
