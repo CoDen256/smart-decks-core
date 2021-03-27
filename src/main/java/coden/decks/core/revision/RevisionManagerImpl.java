@@ -77,7 +77,7 @@ public class RevisionManagerImpl implements RevisionManager {
     public Duration getTimeToNextRevision(Card card) {
         Instant nextReminder = getNextRevision(card);
         Instant now = Instant.now();
-        return Duration.between(nextReminder, now);
+        return Duration.between(now, nextReminder);
     }
 
     /**
