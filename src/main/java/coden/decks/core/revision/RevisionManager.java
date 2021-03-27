@@ -4,6 +4,7 @@ import coden.decks.core.data.Card;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 
 /**
  * The represents basic revision manager. The {@code RevisionManager} can be used to manage the current
@@ -59,4 +60,10 @@ public interface RevisionManager {
      * @return the next time when a card should be review.
      */
     Instant getNextRevision(Card card);
+
+    /**
+     * Sets current levels to operate
+     * @param levels the revision levels
+     */
+    void setRevisionLevels(Collection<RevisionLevel> levels);
 }

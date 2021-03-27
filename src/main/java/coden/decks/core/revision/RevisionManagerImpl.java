@@ -1,16 +1,13 @@
 package coden.decks.core.revision;
 
 import coden.decks.core.data.Card;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -25,40 +22,14 @@ public class RevisionManagerImpl implements RevisionManager {
     private final Set<RevisionLevel> levels = new HashSet<>();
 
     /**
-     * Creates a new revision manager from the given config by deserializing the config to
-     * array of {@link RevisionConfigEntry} and creating correspongin {@link RevisionLevel}s
+     * Creates a new revision manager from the given revision levels. Revision Manager
+     * operates on this levels to compute time to next revision.
      *
-     * @param is
-     *         the input stream of config
-     * @throws IOException
-     *         if the deserializing fails
+     * @param levels
+     *         the revision levels to operate on
      */
-    public RevisionManagerImpl(InputStream is) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        RevisionConfigEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), RevisionConfigEntry[].class);
-
-        for (RevisionConfigEntry entry : entries) {
-            for (int level : entry.getLevels()) {
-                addLevel(entry.getDelayToRevision(), level);
-            }
-        }
-    }
-
-    /**
-     * Adds a new {@link RevisionLevel} from the given delay to next revision and the given level
-     *
-     * @param delayToNextRevision
-     *         the string representing delay to next revision
-     * @param level
-     *         the level
-     * @throws IOException
-     *         if such a revision level already exists
-     */
-    private void addLevel(String delayToNextRevision, int level) throws IOException {
-        Duration amount = Duration.parse(delayToNextRevision);
-        RevisionLevel newLevel = new RevisionLevel(level, amount);
-        if (levels.contains(newLevel)) throw new IOException("Found two revision level entries with the same levels");
-        levels.add(newLevel);
+    public RevisionManagerImpl(Collection<RevisionLevel> levels){
+        setRevisionLevels(levels);
     }
 
     @Override
@@ -137,5 +108,11 @@ public class RevisionManagerImpl implements RevisionManager {
         int level = card.getLevel();
         TemporalAmount nextReminderDelay = this.getTimeToNextRevision(level);
         return lastReview.plus(nextReminderDelay);
+    }
+
+    @Override
+    public void setRevisionLevels(Collection<RevisionLevel> levels) {
+        this.levels.clear();
+        this.levels.addAll(levels);
     }
 }

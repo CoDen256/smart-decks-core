@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 
 import coden.decks.core.data.Card;
 import coden.decks.core.data.SimpleCard;
+import coden.decks.core.revision.config.RevisionLevels;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ class RevisionTest {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        revisor = new RevisionManagerImpl(CONFIG);
+        revisor = new RevisionManagerImpl(new RevisionLevels(CONFIG));
     }
 
     @Test

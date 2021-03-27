@@ -1,4 +1,4 @@
-package coden.decks.core.revision;
+package coden.decks.core.revision.config;
 
 import java.util.List;
 
