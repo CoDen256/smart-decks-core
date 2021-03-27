@@ -74,6 +74,7 @@ public class RevisionManagerImpl implements RevisionManager {
         return levels.stream()
                 .max(Comparator.comparing(RevisionLevel::getLevel))
                 .map(RevisionLevel::getLevel)
+                .map(i -> i + 1)
                 .orElse(0);
     }
 

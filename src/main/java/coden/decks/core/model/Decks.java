@@ -24,13 +24,13 @@ public class Decks implements DecksModel {
     /** The database where cards are saved and are fetched from */
     private final Database database;
     /** The Revision manager to provide functionality to compute next revisions */
-    private final RevisionManager revisioner;
+    private final RevisionManager revisor;
     /** The current user of the decks */
     private User user;
 
-    public Decks(User user, RevisionManager revisioner, Database database) {
+    public Decks(User user, RevisionManager revisor, Database database) {
         this.database = database;
-        this.revisioner = revisioner;
+        this.revisor = revisor;
         setUser(user);
     }
 
@@ -49,7 +49,7 @@ public class Decks implements DecksModel {
         return new SimpleCard.Builder()
                 .setFrontSide(frontSide)
                 .setBackSide(backSide)
-                .setLevel(revisioner.getMinLevel())
+                .setLevel(revisor.getMinLevel())
                 .setLastReview(Instant.now())
                 .create();
     }
@@ -89,7 +89,7 @@ public class Decks implements DecksModel {
     @Override
     public CompletableFuture<Void> setKnow(Card card) {
         final SimpleCard newSimpleCard = new SimpleCard.Builder(card)
-                .setLevel(Math.min(revisioner.getMaxLevel(), card.getLevel() + 1))
+                .setLevel(Math.min(revisor.getMaxLevel(), card.getLevel() + 1))
                 .setLastReview(Instant.now())
                 .create();
 
@@ -107,7 +107,7 @@ public class Decks implements DecksModel {
     @Override
     public CompletableFuture<Void> setDontKnow(Card card) {
         final SimpleCard newSimpleCard = new SimpleCard.Builder(card)
-                .setLevel(Math.max(revisioner.getMinLevel(), card.getLevel() - 1))
+                .setLevel(Math.max(revisor.getMinLevel(), card.getLevel() - 1))
                 .setLastReview(Instant.now())
                 .create();
 
@@ -151,7 +151,7 @@ public class Decks implements DecksModel {
 
     @Override
     public CompletableFuture<List<Card>> getReadyCards() {
-        return database.getLessOrEqualLevel(revisioner.getMaxLevel() - 1)
+        return database.getLessOrEqualLevel(revisor.getMaxLevel() - 1)
                 .thenApply(this::findReadyCards);
     }
 
@@ -163,14 +163,14 @@ public class Decks implements DecksModel {
      * @return the list of ready cards.
      */
     private List<Card> findReadyCards(Stream<Card> cards) {
-        return cards.filter(revisioner::isReady)
-                .sorted(Comparator.comparing((Function<Card, Duration>) revisioner::getTimeToNextRevision).reversed())
+        return cards.filter(revisor::isReady)
+                .sorted(Comparator.comparing((Function<Card, Duration>) revisor::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
     public CompletableFuture<List<Card>> getPendingCards() {
-        return database.getLessOrEqualLevel(revisioner.getMaxLevel() - 1)
+        return database.getLessOrEqualLevel(revisor.getMaxLevel() - 1)
                 .thenApply(this::findPendingCards);
     }
 
@@ -182,14 +182,14 @@ public class Decks implements DecksModel {
      * @return the list of pending cards
      */
     private List<Card> findPendingCards(Stream<Card> cards) {
-        return cards.filter(c -> !revisioner.isReady(c))
-                .sorted(Comparator.comparing((Function<Card, Duration>) revisioner::getTimeToNextRevision).reversed())
+        return cards.filter(c -> !revisor.isReady(c))
+                .sorted(Comparator.comparing((Function<Card, Duration>) revisor::getTimeToNextRevision).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
     public CompletableFuture<List<Card>> getDoneCards() {
-        return database.getGreaterOrEqualLevel(revisioner.getMaxLevel())
+        return database.getGreaterOrEqualLevel(revisor.getMaxLevel())
                 .thenApply(this::collect);
     }
 

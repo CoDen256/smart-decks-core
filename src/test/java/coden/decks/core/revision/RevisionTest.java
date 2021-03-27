@@ -90,7 +90,7 @@ class RevisionTest {
 
     @Test
     void testGetMaxMinLevel() throws IOException {
-        assertEquals(10, revisor.getMaxLevel());
+        assertEquals(11, revisor.getMaxLevel());
         assertEquals(0, revisor.getMinLevel());
     }
 }
