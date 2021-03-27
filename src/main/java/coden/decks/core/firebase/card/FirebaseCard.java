@@ -1,4 +1,4 @@
-package coden.decks.core.firebase;
+package coden.decks.core.firebase.card;
 
 import coden.decks.core.data.Card;
 import coden.decks.core.data.SimpleCard;

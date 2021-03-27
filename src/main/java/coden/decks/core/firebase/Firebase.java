@@ -1,24 +1,27 @@
 package coden.decks.core.firebase;
 
+import static java.util.Objects.requireNonNull;
+
 import coden.decks.core.data.Card;
-import coden.decks.core.data.CardMapper;
+import coden.decks.core.data.CardDeserializer;
+import coden.decks.core.firebase.app.FirebaseAppFactory;
+import coden.decks.core.firebase.config.FirebaseConfig;
 import coden.decks.core.persistence.Database;
 import coden.decks.core.user.User;
+import coden.decks.core.user.UserDeserializer;
 import coden.decks.core.user.UserNotProvidedException;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.firebase.FirebaseOptions;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.cloud.FirestoreClient;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -29,12 +32,16 @@ import java.util.stream.Stream;
  */
 public class Firebase implements Database {
 
-    /** The firebase config */
+    /** A mapper that deserializes internal {@link DocumentSnapshot} to {@link Card} */
+    private final CardDeserializer<DocumentSnapshot> cardUnmarshaller;
+    /** A mapper that deserializes internal {@link DocumentSnapshot} to {@link User} */
+    private final UserDeserializer<DocumentSnapshot> userDeserializer;
+    /** A firebase config containing path to decks and users */
     private final FirebaseConfig config;
-    /** The internal interface to make the requests */
+    /** An internal interface to firebase to make the requests */
     private final Firestore firestore;
-    /** The mapper that maps internal {@link DocumentSnapshot} to {@link Card} */
-    private final CardMapper<DocumentSnapshot> mapper;
+    /** Created app for this current session of database connection */
+    private final FirebaseApp app;
 
     /** The current user of the collections */
     private User user;
@@ -42,84 +49,86 @@ public class Firebase implements Database {
     private CollectionReference deck;
 
     /**
-     * Creates a new {@code Firebase}
+     * Creates a new database connection to firebase
      *
-     * @param serviceAccount
-     *         the service account configuration
+     * @param cardDeserializer
+     *         to deserialize internal representation of cards to {@link Card}s
+     * @param userDeserializer
+     *         to deserialize internal representation of user tos {@link User}s
      * @param config
-     *         the firebase configuration
-     * @throws IOException
-     *         on creating a {@link Firestore}
+     *         the firebase config
+     * @param factory
+     *         the firebase factory to create app instances
      */
-    public Firebase(CardMapper<DocumentSnapshot> mapper, FirebaseConfig config, InputStream serviceAccount) throws IOException {
-        this.mapper = Objects.requireNonNull(mapper);
-        this.config = Objects.requireNonNull(config);
-        this.firestore = createFirestore(Objects.requireNonNull(serviceAccount), config.url);
+    public Firebase(CardDeserializer<DocumentSnapshot> cardDeserializer, UserDeserializer<DocumentSnapshot> userDeserializer,
+                    FirebaseConfig config, InputStream serviceAccount, FirebaseAppFactory factory) throws Exception {
+        this.cardUnmarshaller = requireNonNull(cardDeserializer);
+        this.userDeserializer = requireNonNull(userDeserializer);
+        this.config = requireNonNull(config);
+        this.app = requireNonNull(factory).create(config, serviceAccount);
+        this.firestore = FirestoreClient.getFirestore(app);
     }
 
     /**
-     * Utility method that creates a {@link Firestore} from the given service account and url
+     * Returns the current user
      *
-     * @param serviceAccount
-     *         the service account
-     * @param url
-     *         the url of the firebase
-     * @return a new {@link Firestore} to manage firebase
-     * @throws IOException
-     *         on reading service account
+     * @return the user, may be {@code null}
      */
-    private Firestore createFirestore(InputStream serviceAccount, String url) throws IOException {
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(url)
-                .build();
-
-        return FirestoreClient.getFirestore();
+    @Override
+    public User getUser() {
+        return user;
     }
 
     /**
      * Updates the user, thus changing the deck reference
      *
-     * @param user
-     *         the user to change
+     * @param newUser
+     *         the user to set
      */
     @Override
-    public void setUser(User user) {
-        if (!Objects.equals(this.user, user)) {
-            this.user = Objects.requireNonNull(user);
+    public void setUser(User newUser) {
+        if (!Objects.equals(this.user, newUser)) {
+            this.user = requireNonNull(newUser);
             this.deck = null;
         }
     }
 
     @Override
+    public CompletableFuture<Stream<User>> getAllUsers() {
+        ApiFuture<QuerySnapshot> allUsersFuture = firestore.collection(config.userCollection).get();
+        return createCompletableFuture(allUsersFuture)
+                .thenApply(this::asUsers);
+    }
+
+    @Override
     public CompletableFuture<Stream<Card>> getAllEntries() throws UserNotProvidedException {
-        ApiFuture<QuerySnapshot> getAllEntriesFuture = getDeck().get();
+        ApiFuture<QuerySnapshot> getAllEntriesFuture = getCurrentDeck().get();
         return createCompletableFuture(getAllEntriesFuture).
-                thenApply(this::fetchDocumentsAsCards);
+                thenApply(this::asCards);
     }
 
 
     @Override
     public CompletableFuture<Stream<Card>> getGreaterOrEqualLevel(int level) throws UserNotProvidedException {
-        ApiFuture<QuerySnapshot> getGreaterOrEqualLevelFuture = getDeck()
+        ApiFuture<QuerySnapshot> getGreaterOrEqualLevelFuture = getCurrentDeck()
                 .whereGreaterThanOrEqualTo("level", level)
                 .get();
         return createCompletableFuture(getGreaterOrEqualLevelFuture)
-                .thenApply(this::fetchDocumentsAsCards);
+                .thenApply(this::asCards);
     }
 
     @Override
     public CompletableFuture<Stream<Card>> getLessOrEqualLevel(int level) throws UserNotProvidedException {
-        ApiFuture<QuerySnapshot> getLessOrEqualLevelFuture = getDeck()
+        ApiFuture<QuerySnapshot> getLessOrEqualLevelFuture = getCurrentDeck()
                 .whereLessThanOrEqualTo("level", level)
                 .get();
         return createCompletableFuture(getLessOrEqualLevelFuture)
-                .thenApply(this::fetchDocumentsAsCards);
+                .thenApply(this::asCards);
     }
 
     @Override
     public CompletableFuture<Void> deleteEntry(Card card) throws UserNotProvidedException {
-        ApiFuture<WriteResult> deleteFuture = getDeck()
+        ApiFuture<WriteResult> deleteFuture = getCurrentDeck()
                 .document(card.getFrontSide())
                 .delete();
         return createCompletableFuture(deleteFuture)
@@ -128,7 +137,7 @@ public class Firebase implements Database {
 
     @Override
     public CompletableFuture<Void> addOrUpdateEntry(Card card) {
-        ApiFuture<WriteResult> addOrUpdateFuture = getDeck()
+        ApiFuture<WriteResult> addOrUpdateFuture = getCurrentDeck()
                 .document(card.getFrontSide())
                 .set(card);
         return createCompletableFuture(addOrUpdateFuture)
@@ -141,9 +150,9 @@ public class Firebase implements Database {
      *
      * @return the deck
      */
-    private CollectionReference getDeck() {
+    private CollectionReference getCurrentDeck() {
         if (deck == null) {
-            deck = createCollection();
+            deck = requestDeckCollection();
         }
         return deck;
     }
@@ -155,11 +164,11 @@ public class Firebase implements Database {
      * @throws UserNotProvidedException
      *         if user was not set
      */
-    private CollectionReference createCollection() {
+    private CollectionReference requestDeckCollection() {
         if (user == null) throw new UserNotProvidedException();
-        return firestore.collection(this.config.userCollection)
-                .document(this.user.getName())
-                .collection(this.config.deckCollection);
+        return firestore.collection(config.userCollection)
+                .document(user.getName())
+                .collection(config.deckCollection);
     }
 
     /**
@@ -202,13 +211,22 @@ public class Firebase implements Database {
      * Converts the given {@link QuerySnapshot} to stream of {@link Card}s
      *
      * @param snapshot
-     *         the snapshot to fetch
+     *         the snapshot to convert
      * @return the stream of cards contained by the given query snapshot
      */
-    private Stream<Card> fetchDocumentsAsCards(QuerySnapshot snapshot) {
-        return snapshot.getDocuments()
-                .stream()
-                .map(mapper::map);
+    private Stream<Card> asCards(QuerySnapshot snapshot) {
+        return snapshot.getDocuments().stream().map(cardUnmarshaller::deserialize);
+    }
+
+    /**
+     * Converts the given {@link QuerySnapshot} to stream of {@link User}s
+     *
+     * @param snapshot
+     *         the snapshot to convert
+     * @return the stream of users contained by the given query snapshot
+     */
+    private Stream<User> asUsers(QuerySnapshot snapshot) {
+        return snapshot.getDocuments().stream().map(userDeserializer::deserialize);
     }
 
     /**
@@ -217,5 +235,6 @@ public class Firebase implements Database {
     @Override
     public void close() throws Exception {
         firestore.close();
+        app.delete();
     }
 }

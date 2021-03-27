@@ -34,8 +34,8 @@ public class RevisionManagerImpl implements RevisionManager {
      *         if the deserializing fails
      */
     public RevisionManagerImpl(InputStream is) throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final RevisionConfigEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), RevisionConfigEntry[].class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        RevisionConfigEntry[] entries = objectMapper.readValue(Objects.requireNonNull(is), RevisionConfigEntry[].class);
 
         for (RevisionConfigEntry entry : entries) {
             for (int level : entry.getLevels()) {

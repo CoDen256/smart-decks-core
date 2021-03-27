@@ -1,22 +1,20 @@
 package coden.decks.core.data;
 
-import coden.decks.core.data.Card;
-
 /**
- * Represents a card mapper, that maps internal representation of {@link Card}
+ * Represents a card deserializer, that deserializes internal representation of type <T>
  * to {@link Card}
  *
  * @param <T>
  *         type of internal representation of {@link Card}
  */
 @FunctionalInterface
-public interface CardMapper<T> {
+public interface CardDeserializer<T> {
     /**
-     * Maps given source of type <T> to {@link Card}
+     * Deserializes given source of type <T> to {@link Card}
      *
      * @param source
      *         the internal representation
      * @return a {@link Card}
      */
-    Card map(T source);
+    Card deserialize(T source);
 }

@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import coden.decks.core.data.Card;
 import coden.decks.core.data.SimpleCard;
-import coden.decks.core.firebase.FirebaseCardMapper;
-import coden.decks.core.firebase.FirebaseConfig;
 import coden.decks.core.persistence.Database;
-import coden.decks.core.firebase.Firebase;
 import coden.decks.core.revision.RevisionManagerImpl;
 import coden.decks.core.user.UserEntry;
 import java.io.InputStream;
@@ -36,10 +33,10 @@ class SimpleModelTest {
     @BeforeAll
     static void beforeAll() throws Exception{
         revisionManagerImpl = new RevisionManagerImpl(read("/revision_test.json"));
-        firebase = new Firebase(
-                new FirebaseCardMapper(),
-                new FirebaseConfig(read("/firebase_test.cfg")),
-                read("/serviceAccountTest.json"));
+//        firebase = new Firebase(
+//                new FirebaseCardDeserializer(),
+//                new FirebaseConfig(read("/firebase_test.cfg")),
+//                read("/serviceAccountTest.json"));
     }
 
     @Test

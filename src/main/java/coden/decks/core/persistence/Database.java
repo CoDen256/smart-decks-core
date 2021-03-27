@@ -3,7 +3,6 @@ package coden.decks.core.persistence;
 import coden.decks.core.data.Card;
 import coden.decks.core.user.User;
 
-import java.io.Closeable;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -13,12 +12,26 @@ import java.util.stream.Stream;
  */
 public interface Database extends AutoCloseable {
     /**
+     * Returns the user for current database connection
+     *
+     * @return the current user
+     */
+    User getUser();
+
+    /**
      * Sets a given user for the current database connection
      *
      * @param user
      *         the user
      */
     void setUser(User user);
+
+    /**
+     * Returns all currently created users used in this database
+     *
+     * @return the request to get stream of all users;
+     */
+    CompletableFuture<Stream<User>> getAllUsers();
 
     /**
      * Returns all entries asynchronously.
