@@ -142,7 +142,7 @@ public class SimpleCard implements Card {
 
         private void validate() {
             if (this.level == -1) {
-                throw new IllegalStateException("Level has to be specified");
+                throw new IllegalArgumentException("Level has to be specified");
             }
         }
     }
